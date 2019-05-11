@@ -1,9 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using OpenTK.Graphics.OpenGL;
 using OpenTK;
 
-namespace MazeGen2D
+namespace SharedLib
 {
     public class ShaderProgram
     {
@@ -75,7 +74,7 @@ namespace MazeGen2D
 
         public void bind()
         {
-            GL.UseProgram(programId);     
+            GL.UseProgram(programId);
         }
 
         public void unbind()

@@ -1,6 +1,6 @@
 ﻿using OpenTK.Graphics.OpenGL;
 
-namespace MazeGen2D
+namespace SharedLib
 {
     public class Mesh
     {

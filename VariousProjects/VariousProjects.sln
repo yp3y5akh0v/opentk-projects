@@ -5,6 +5,10 @@ VisualStudioVersion = 15.0.28307.438
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MazeGen2D", "MazeGen2D\MazeGen2D.csproj", "{FCBAE449-9BFD-4BFB-BF93-950116B51F7F}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MazeGen3D", "MazeGen3D\MazeGen3D.csproj", "{B4483B62-AC70-4937-9B5C-E09A0A5DFC5A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SharedLib", "SharedLib\SharedLib.csproj", "{9EB6D5DC-8B7F-45A8-9D81-F0E9799AA8D8}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +19,14 @@ Global
 		{FCBAE449-9BFD-4BFB-BF93-950116B51F7F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FCBAE449-9BFD-4BFB-BF93-950116B51F7F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FCBAE449-9BFD-4BFB-BF93-950116B51F7F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B4483B62-AC70-4937-9B5C-E09A0A5DFC5A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B4483B62-AC70-4937-9B5C-E09A0A5DFC5A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B4483B62-AC70-4937-9B5C-E09A0A5DFC5A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B4483B62-AC70-4937-9B5C-E09A0A5DFC5A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9EB6D5DC-8B7F-45A8-9D81-F0E9799AA8D8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9EB6D5DC-8B7F-45A8-9D81-F0E9799AA8D8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9EB6D5DC-8B7F-45A8-9D81-F0E9799AA8D8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9EB6D5DC-8B7F-45A8-9D81-F0E9799AA8D8}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

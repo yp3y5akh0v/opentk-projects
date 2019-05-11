@@ -1,7 +1,6 @@
-﻿using System;
-using OpenTK;
+﻿using OpenTK;
 
-namespace MazeGen2D
+namespace SharedLib
 {
     public class Transformation
     {
@@ -17,7 +16,7 @@ namespace MazeGen2D
         }
 
         public static Matrix4 GetPerspectiveProjectionMatrix(float fov, float width, float height, float zNear, float zFar)
-        {            
+        {
             return Matrix4.CreatePerspectiveFieldOfView(fov, width / height, zNear, zFar);
         }
 

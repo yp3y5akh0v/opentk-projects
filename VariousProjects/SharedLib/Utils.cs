@@ -1,11 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.IO;
 
-namespace MazeGen2D
+namespace SharedLib
 {
     public class Utils
     {
@@ -15,9 +10,10 @@ namespace MazeGen2D
             using (var sr = new StreamReader(filepath))
             {
                 string line;
-                while ((line = sr.ReadLine()) != null) {
+                while ((line = sr.ReadLine()) != null)
+                {
                     result += line + "\n";
-                } 
+                }
             }
 
             return result;

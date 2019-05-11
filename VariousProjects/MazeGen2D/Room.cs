@@ -1,5 +1,5 @@
-﻿using System;
-using OpenTK;
+﻿using OpenTK;
+using SharedLib;
 
 namespace MazeGen2D
 {
