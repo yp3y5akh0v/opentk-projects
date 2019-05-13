@@ -6,23 +6,23 @@ namespace MazeGen2D
     public class Room
     {
         private bool[] doors;
-        private SegmentObject[] segments;
-        private QuadObject shield;
+        private Segment2DObject[] segments;
+        private Quad2DObject shield;
         private bool visited;
 
         public Room(float x, float y, float z, float w, float h)
         {
             doors = new bool[4];
-            segments = new SegmentObject[4];
+            segments = new Segment2DObject[4];
             visited = false;
 
             float epsX = w * 0.5f;
             float epsY = h * 0.5f;
 
-            segments[0] = new SegmentObject(new float[] { x, y, z, x + w + epsX, y, z }, new float[] { 1.0f, 1.0f, 1.0f });
-            segments[1] = new SegmentObject(new float[] { x, y, z, x, y + h + epsY, z }, new float[] { 1.0f, 1.0f, 1.0f });
-            segments[2] = new SegmentObject(new float[] { x, y + h, z, x + w + epsX, y + h, z }, new float[] { 1.0f, 1.0f, 1.0f });
-            segments[3] = new SegmentObject(new float[] { x + w, y, z, x + w, y + h + epsY, z }, new float[] { 1.0f, 1.0f, 1.0f });
+            segments[0] = new Segment2DObject(new float[] { x, y, z, x + w + epsX, y, z }, new float[] { 1.0f, 1.0f, 1.0f }, new int[] { 0, 1 });
+            segments[1] = new Segment2DObject(new float[] { x, y, z, x, y + h + epsY, z }, new float[] { 1.0f, 1.0f, 1.0f }, new int[] { 0, 1 });
+            segments[2] = new Segment2DObject(new float[] { x, y + h, z, x + w + epsX, y + h, z }, new float[] { 1.0f, 1.0f, 1.0f }, new int[] { 0, 1 });
+            segments[3] = new Segment2DObject(new float[] { x + w, y, z, x + w, y + h + epsY, z }, new float[] { 1.0f, 1.0f, 1.0f }, new int[] { 0, 1 });
 
             var shieldPositions = new float[]
             {
@@ -32,7 +32,7 @@ namespace MazeGen2D
                 x + w, y, z
             };
 
-            shield = new QuadObject(shieldPositions, new float[] { 0.372f, 0.207f, 0.592f });            
+            shield = new Quad2DObject(shieldPositions, new float[] { 0.372f, 0.207f, 0.592f }, new int[] { 0, 1, 2, 0, 2, 3 });            
         }
 
         public void OpenTopDoor()

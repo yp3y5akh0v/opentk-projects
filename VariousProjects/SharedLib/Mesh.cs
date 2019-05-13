@@ -51,10 +51,12 @@ namespace SharedLib
         public void CleanUp()
         {
             GL.DisableVertexAttribArray(0);
-            GL.DisableVertexAttribArray(1);
+            GL.DisableVertexAttribArray(1);            
             GL.BindBuffer(BufferTarget.ArrayBuffer, 0);
             GL.DeleteBuffer(posVboId);
             GL.DeleteBuffer(colorVboId);
+            GL.BindBuffer(BufferTarget.ElementArrayBuffer, 0);
+            GL.DeleteBuffer(idxVboId);
             GL.BindVertexArray(0);
             GL.DeleteVertexArray(vaoId);
         }

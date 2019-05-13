@@ -36,6 +36,7 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -44,11 +45,15 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Camera.cs" />
     <Compile Include="GameObject.cs" />
+    <Compile Include="IGameInput.cs" />
+    <Compile Include="KeyboardInput.cs" />
     <Compile Include="Mesh.cs" />
+    <Compile Include="MouseInput.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="QuadObject.cs" />
-    <Compile Include="SegmentObject.cs" />
+    <Compile Include="Quad2DObject.cs" />
+    <Compile Include="Segment2DObject.cs" />
     <Compile Include="ShaderProgram.cs" />
     <Compile Include="Transformation.cs" />
     <Compile Include="Utils.cs" />

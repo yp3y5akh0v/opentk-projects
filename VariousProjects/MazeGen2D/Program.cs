@@ -8,9 +8,8 @@ using SharedLib;
 
 namespace MazeGen2D
 {
-    class Program
+    public class Program
     {
-
         private GameWindow window;
         private ShaderProgram shaderProgram;
         private Room[] rooms;

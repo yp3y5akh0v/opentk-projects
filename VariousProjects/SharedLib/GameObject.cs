@@ -73,5 +73,18 @@ namespace SharedLib
             mesh.Render();
         }
 
+        public void UpdatePosition(float dx, float dy, float dz)
+        {
+            position.X += dx;
+            position.Y += dy;
+            position.Z += dz;
+        }
+
+        public void UpdateRotation(float dx, float dy, float dz)
+        {
+            rotation.X += dx;
+            rotation.Y += dy;
+            rotation.Z += dz;
+        }
     }
 }
