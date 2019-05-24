@@ -9,16 +9,16 @@ namespace SharedLib
         {
             var result = Matrix4.Identity;
             result = Matrix4.Mult(Matrix4.CreateScale(scale), result);
-            result = Matrix4.Mult(Matrix4.CreateRotationX(MathHelper.DegreesToRadians(rotation.X)), result);
-            result = Matrix4.Mult(Matrix4.CreateRotationY(MathHelper.DegreesToRadians(rotation.Y)), result);
-            result = Matrix4.Mult(Matrix4.CreateRotationZ(MathHelper.DegreesToRadians(rotation.Z)), result);
+            result = Matrix4.Mult(Matrix4.CreateRotationX(rotation.X), result);
+            result = Matrix4.Mult(Matrix4.CreateRotationY(rotation.Y), result);
+            result = Matrix4.Mult(Matrix4.CreateRotationZ(rotation.Z), result);
             result = Matrix4.Mult(Matrix4.CreateTranslation(offset), result);
             return result;
         }
 
         public static Matrix4 GetPerspectiveProjectionMatrix(float fov, float width, float height, float zNear, float zFar)
         {
-            return Matrix4.CreatePerspectiveOffCenter(-width / 2, width / 2, height / 2, -height / 2, zNear, zFar);
+            return Matrix4.CreatePerspectiveOffCenter(-width / 2.0f, width / 2.0f, height / 2.0f, -height / 2.0f, zNear, zFar);
         }
 
         public static Matrix4 GetOrthoProjectionMatrix(float width, float height, float zNear, float zFar)
@@ -31,15 +31,15 @@ namespace SharedLib
 
         public static Matrix4 GetViewMatrix(Camera camera)
         {
+            var lookat = Vector3.Zero;
             var camPos = camera.GetPosition();
             var camRot = camera.GetRotation();
 
-            var result = Matrix4.Identity;            
-            result = Matrix4.Mult(Matrix4.CreateRotationX(MathHelper.DegreesToRadians(camRot.X)), result);
-            result = Matrix4.Mult(Matrix4.CreateRotationY(MathHelper.DegreesToRadians(camRot.Y)), result);
-            result = Matrix4.Mult(Matrix4.CreateTranslation(-camPos.X, -camPos.Y, -camPos.Z), result);
+            lookat.X = (float) (Math.Sin(camRot.X) * Math.Cos(camRot.Y));
+            lookat.Y = (float) Math.Sin(camRot.Y);
+            lookat.Z = (float) (Math.Cos(camRot.X) * Math.Cos(camRot.Y));
 
-            return result;
+            return Matrix4.LookAt(camPos, camPos + lookat, Vector3.UnitY);
         }
     }
 }

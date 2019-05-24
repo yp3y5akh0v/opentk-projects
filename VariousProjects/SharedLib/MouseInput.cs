@@ -6,7 +6,6 @@ namespace SharedLib
 {
     public class MouseInput : IGameInput
     {
-        private readonly float SENSITIVITY = 1f;
 
         private Vector3 prevPos;
         private Vector3 curPos;
@@ -48,8 +47,8 @@ namespace SharedLib
 
         public void Update(float interval)
         {
-            var ds = Vector3.Multiply(posDisp, SENSITIVITY * interval);
-            camera.UpdateRotation(-ds.Y, ds.X, 0.0f);
+            var ds = Vector3.Multiply(posDisp, Constants.SENSITIVITY * interval);
+            camera.UpdateRotation(ds.X, ds.Y);
         }
     }
 }

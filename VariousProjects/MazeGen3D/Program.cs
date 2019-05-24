@@ -93,8 +93,8 @@ namespace MazeGen3D
             GL.ClearColor(Color.FromArgb(0, 0, 0, 0));
             GL.Enable(EnableCap.DepthTest);
 
-            camera = new Camera(Vector3.Zero, Vector3.Zero);
-            keyboard = new KeyboardInput(camera, zNear, zFar);
+            camera = new Camera(Vector3.Zero, new Vector3((float) Math.PI, 0f, 0f));
+            keyboard = new KeyboardInput(camera);
             mouse = new MouseInput(camera);
 
             shaderProgram = new ShaderProgram();

@@ -38,28 +38,26 @@ namespace SharedLib
             rotation.Z = z;
         }
 
-        public void UpdateRotation(float dx, float dy, float dz)
+        public void UpdateRotation(float dx, float dy)
         {
-            rotation.X += dx;
-            rotation.Y += dy;
-            rotation.Z += dz;
+            rotation.X = (rotation.X + dx) % ((float) Math.PI * 2);
+            rotation.Y = Math.Max(Math.Min(rotation.Y + dy, (float) Math.PI / 2 - 1.0f), (float)- Math.PI / 2 + 1.0f);
         }
 
         public void UpdatePosition(float dx, float dy, float dz)
-        {        
-            if (dx != 0)
-            {
-                position.X += -dx * (float)Math.Sin(MathHelper.DegreesToRadians(rotation.Y - 90));
-                position.Z += dx * (float)Math.Cos(MathHelper.DegreesToRadians(rotation.Y - 90));
-            }
+        {
+            var offset = Vector3.Zero;
+            var forward = new Vector3((float)Math.Sin(rotation.X), 0f, (float)Math.Cos(rotation.X));
+            var right = new Vector3(-forward.Z, 0f, forward.X);
 
-            position.Y += dy;
+            offset += dx * right;
+            offset += dy * forward;
+            offset.Y += dz;
 
-            if (dz != 0)
-            {
-                position.X += -dz * (float)Math.Sin(MathHelper.DegreesToRadians(rotation.Y));
-                position.Z += dz * (float)Math.Cos(MathHelper.DegreesToRadians(rotation.Y));
-            }
+            offset.NormalizeFast();
+            offset = Vector3.Multiply(offset, Constants.SPEED);
+
+            position += offset;
         }
     }
 }

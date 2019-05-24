@@ -46,6 +46,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Camera.cs" />
+    <Compile Include="Constants.cs" />
     <Compile Include="GameObject.cs" />
     <Compile Include="IGameInput.cs" />
     <Compile Include="KeyboardInput.cs" />
