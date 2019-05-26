@@ -57,6 +57,11 @@ namespace SharedLib
             GL.Uniform3(uniforms[uniformName], value);
         }
 
+        public void SetUniform(string uniformName, float value)
+        {
+            GL.Uniform1(uniforms[uniformName], value);
+        }
+
         public void link()
         {
             GL.LinkProgram(programId);
@@ -99,11 +104,6 @@ namespace SharedLib
             {
                 GL.DeleteShader(fragmentShaderId);
             }
-        }
-
-        public int GetAttributeLocation(string name)
-        {
-            return GL.GetAttribLocation(programId, name);
         }
     }
 }

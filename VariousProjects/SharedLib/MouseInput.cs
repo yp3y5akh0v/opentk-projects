@@ -38,8 +38,9 @@ namespace SharedLib
             curPos = new Vector3(p.X, p.Y, 0f);
 
             if (prevPos.X > 0.0f && prevPos.Y > 0.0f && isMouseInWindow && state.IsButtonDown(MouseButton.Left))
-            {                
-                posDisp = Vector3.Subtract(curPos, prevPos);
+            {
+                posDisp.X = prevPos.X - curPos.X;
+                posDisp.Y = prevPos.Y - curPos.Y;
             }            
 
             prevPos = new Vector3(curPos.X, curPos.Y, curPos.Z);

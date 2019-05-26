@@ -46,16 +46,20 @@ namespace SharedLib
 
         public void UpdatePosition(float dx, float dy, float dz)
         {
-            var offset = Vector3.Zero;
-            var forward = new Vector3((float)Math.Sin(rotation.X), 0f, (float)Math.Cos(rotation.X));
-            var right = new Vector3(-forward.Z, 0f, forward.X);
+            Vector3 offset = Vector3.Zero, lookat = Vector3.Zero, right = Vector3.Zero;
 
-            offset += dx * right;
-            offset += dy * forward;
-            offset.Y += dz;
+            lookat.X = (float)(Math.Sin(rotation.X) * Math.Cos(rotation.Y));
+            lookat.Y = (float)Math.Sin(rotation.X);
+            lookat.Z = (float)(Math.Cos(rotation.X) * Math.Cos(rotation.Y));
 
-            offset.NormalizeFast();
-            offset = Vector3.Multiply(offset, Constants.SPEED);
+            lookat.NormalizeFast();
+
+            right = Vector3.Cross(Vector3.UnitY, lookat);
+            right.NormalizeFast();
+
+            offset += Vector3.Multiply(lookat, dz);
+            offset += Vector3.Multiply(right, dx);
+            offset += Vector3.Multiply(Vector3.UnitY, dy);
 
             position += offset;
         }

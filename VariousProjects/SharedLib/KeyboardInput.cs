@@ -24,30 +24,30 @@ namespace SharedLib
 
             if (state.IsKeyDown(Key.W) || state.IsKeyDown(Key.Up))
             {
-                posDisp.Y = 1;
+                posDisp.Z = 1;
             }
             else if (state.IsKeyDown(Key.S) || state.IsKeyDown(Key.Down))
             {
-                posDisp.Y = -1;
+                posDisp.Z = -1;
             }
 
             if (state.IsKeyDown(Key.A) || state.IsKeyDown(Key.Left))
             {
-                posDisp.X = -1;
+                posDisp.X = 1;
             }
             else if (state.IsKeyDown(Key.D) || state.IsKeyDown(Key.Right))
             {
-                posDisp.X = 1;
+                posDisp.X = -1;
             }
 
             if (state.IsKeyDown(Key.Q))
             {
-                posDisp.Z = 1;
+                posDisp.Y = -1;
             }
             else if (state.IsKeyDown(Key.E))
             {
-                posDisp.Z = -1;
-            }          
+                posDisp.Y = 1;
+            }
         }
 
         public void Update(float interval)
