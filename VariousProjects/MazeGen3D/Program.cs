@@ -28,26 +28,14 @@ namespace MazeGen3D
         public void Start()
         {
             window = new GameWindow(1600, 900, GraphicsMode.Default, "Maze Gen 3D");
+            window.CursorVisible = false;
 
             window.Load += Window_Load;
             window.UpdateFrame += Window_UpdateFrame;
             window.RenderFrame += Window_RenderFrame;
             window.Unload += Window_Unload;
 
-            window.MouseEnter += Window_MouseEnter;
-            window.MouseLeave += Window_MouseLeave;
-
             window.Run();
-        }
-
-        private void Window_MouseLeave(object sender, EventArgs e)
-        {
-            mouse.UpdateMouseEnter(false);
-        }
-
-        private void Window_MouseEnter(object sender, EventArgs e)
-        {
-            mouse.UpdateMouseEnter(true);
         }
 
         private void Window_Unload(object sender, EventArgs e)
@@ -57,11 +45,8 @@ namespace MazeGen3D
 
         private void Window_UpdateFrame(object sender, FrameEventArgs e)
         {
-            keyboard.Input(window);
-            keyboard.Update((float) e.Time);
-
-            mouse.Input(window);
-            mouse.Update((float)e.Time);
+            keyboard.Input(window, (float)e.Time);
+            mouse.Input(window, (float)e.Time);
         }
 
         private void Window_RenderFrame(object sender, FrameEventArgs e)

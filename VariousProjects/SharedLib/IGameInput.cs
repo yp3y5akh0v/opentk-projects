@@ -4,7 +4,6 @@ namespace SharedLib
 {
     public interface IGameInput
     {
-        void Input(GameWindow window);
-        void Update(float interval);
+        void Input(GameWindow window, float interval);
     }
 }

@@ -16,7 +16,7 @@ namespace SharedLib
             posDisp = Vector3.Zero;
         }
 
-        public void Input(GameWindow window)
+        public void Input(GameWindow window, float interval)
         {
             var state = Keyboard.GetState();
 
@@ -42,17 +42,19 @@ namespace SharedLib
 
             if (state.IsKeyDown(Key.Q))
             {
-                posDisp.Y = -1;
+                posDisp.Y = 1;
             }
             else if (state.IsKeyDown(Key.E))
             {
-                posDisp.Y = 1;
+                posDisp.Y = -1;
             }
-        }
 
-        public void Update(float interval)
-        {
-            var ds = Vector3.Multiply(posDisp, Constants.SPEED * interval);
+            if (state.IsKeyDown(Key.Escape))
+            {
+                window.Exit();
+            }
+
+            var ds = Constants.SPEED * interval * posDisp;
 
             camera.UpdatePosition(ds.X, ds.Y, ds.Z);
         }

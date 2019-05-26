@@ -41,7 +41,7 @@ namespace SharedLib
         public void UpdateRotation(float dx, float dy)
         {
             rotation.X = (rotation.X + dx) % ((float) Math.PI * 2);
-            rotation.Y = Math.Max(Math.Min(rotation.Y + dy, (float) Math.PI / 2 - 1.0f), (float)- Math.PI / 2 + 1.0f);
+            rotation.Y = Math.Max(Math.Min(rotation.Y + dy, (float) Math.PI / 2), (float)- Math.PI / 2);
         }
 
         public void UpdatePosition(float dx, float dy, float dz)
@@ -49,7 +49,7 @@ namespace SharedLib
             Vector3 offset = Vector3.Zero, lookat = Vector3.Zero, right = Vector3.Zero;
 
             lookat.X = (float)(Math.Sin(rotation.X) * Math.Cos(rotation.Y));
-            lookat.Y = (float)Math.Sin(rotation.X);
+            lookat.Y = (float)Math.Sin(rotation.Y);
             lookat.Z = (float)(Math.Cos(rotation.X) * Math.Cos(rotation.Y));
 
             lookat.NormalizeFast();
