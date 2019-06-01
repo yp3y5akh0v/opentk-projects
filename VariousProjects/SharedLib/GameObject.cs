@@ -85,6 +85,6 @@ namespace SharedLib
             rotation.X += dx;
             rotation.Y += dy;
             rotation.Z += dz;
-        }
+        }        
     }
 }

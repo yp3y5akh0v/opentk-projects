@@ -6,7 +6,6 @@ namespace SharedLib
 {
     public class KeyboardInput : IGameInput
     {
-
         private Vector3 posDisp;
         private Camera camera;
 

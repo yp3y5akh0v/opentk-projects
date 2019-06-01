@@ -4,6 +4,7 @@ using OpenTK.Graphics;
 using OpenTK.Graphics.OpenGL;
 using System.Drawing;
 using SharedLib;
+using System.Collections.Generic;
 
 namespace MazeGen3D
 {
@@ -11,10 +12,9 @@ namespace MazeGen3D
     {
         private GameWindow window;
         private ShaderProgram shaderProgram;
-        private Quad2DObject quad;
-        private Camera camera;
-        private KeyboardInput keyboard;
-        private MouseInput mouse;        
+        private List<Quad2DObject> quads;
+
+        private Player player;
 
         private readonly float zNear = 0.1f;
         private readonly float zFar = 1e+6f;
@@ -29,6 +29,7 @@ namespace MazeGen3D
         {
             window = new GameWindow(1600, 900, GraphicsMode.Default, "Maze Gen 3D");
             window.CursorVisible = false;
+            window.WindowState = WindowState.Fullscreen;
 
             window.Load += Window_Load;
             window.UpdateFrame += Window_UpdateFrame;
@@ -41,12 +42,16 @@ namespace MazeGen3D
         private void Window_Unload(object sender, EventArgs e)
         {
             shaderProgram.CleanUp();
-        }        
+        }
 
         private void Window_UpdateFrame(object sender, FrameEventArgs e)
         {
-            keyboard.Input(window, (float)e.Time);
-            mouse.Input(window, (float)e.Time);
+            player.Input(window, (float)e.Time);
+
+            foreach (var quad in quads)
+            {
+                //TODO
+            }
         }
 
         private void Window_RenderFrame(object sender, FrameEventArgs e)
@@ -59,19 +64,27 @@ namespace MazeGen3D
             var projectionMatrix = Transformation.GetPerspectiveProjectionMatrix(fov, window.Width, window.Height, zNear, zFar);
             shaderProgram.SetUniform("projectionMatrix", projectionMatrix);
 
-            var viewMatrix = Transformation.GetViewMatrix(camera);
+            var viewMatrix = Transformation.GetViewMatrix(player.GetCamera());
             shaderProgram.SetUniform("viewMatrix", viewMatrix);
 
-            var worldMatrix = Transformation.GetWorldMatrix(quad.GetPosition(), quad.GetRotation(), quad.GetScale());
-            shaderProgram.SetUniform("worldMatrix", worldMatrix);
+            foreach (var quad in quads)
+            {
+                var worldMatrix = Transformation.GetWorldMatrix(quad.GetPosition(), quad.GetRotation(), quad.GetScale());
+                shaderProgram.SetUniform("worldMatrix", worldMatrix);
+            }
 
+            shaderProgram.SetUniform("viewPos", player.GetPosition());
             shaderProgram.SetUniform("light.color", Vector3.One);
             shaderProgram.SetUniform("light.ambientStrength", 0.4f);
-            shaderProgram.SetUniform("light.position", camera.GetPosition());
+            shaderProgram.SetUniform("light.position", 300 * Vector3.UnitX);
             shaderProgram.SetUniform("material.color", new Vector3(0.6f, 0.6f, 0.6f));
+            shaderProgram.SetUniform("material.specularStrength", 0.6f);
             shaderProgram.SetUniform("material.shininess", 100f);
 
-            quad.Render();
+            foreach (var quad in quads)
+            {
+                quad.Render();
+            }            
 
             shaderProgram.unbind();
 
@@ -84,9 +97,7 @@ namespace MazeGen3D
             GL.ClearColor(Color.FromArgb(0, 0, 0, 0));
             GL.Enable(EnableCap.DepthTest);
 
-            camera = new Camera(Vector3.Zero, new Vector3((float) Math.PI, 0f, 0f));
-            keyboard = new KeyboardInput(camera);
-            mouse = new MouseInput(camera);
+            player = new Player(10f);
 
             shaderProgram = new ShaderProgram();
             shaderProgram.createVertexShader(Utils.loadShaderCode("vertex.glsl"));
@@ -97,16 +108,20 @@ namespace MazeGen3D
             shaderProgram.createUniform("worldMatrix");
             shaderProgram.createUniform("projectionMatrix");
 
+            shaderProgram.createUniform("viewPos");
             shaderProgram.createUniform("light.color");
             shaderProgram.createUniform("light.ambientStrength");
             shaderProgram.createUniform("light.position");
             shaderProgram.createUniform("material.color");
+            shaderProgram.createUniform("material.specularStrength");
             shaderProgram.createUniform("material.shininess");
+
+            quads = new List<Quad2DObject>();
 
             float w = window.Width;
             float h = window.Height;
             
-            quad = new Quad2DObject(
+            var quad = new Quad2DObject(
                 new float[]
                 {
                     0f, 0f, 0f,
@@ -127,7 +142,9 @@ namespace MazeGen3D
                     2, 1, 3
                 });
            
-            quad.SetPosition(-w / 4, -h / 4, -400f);            
+            quad.SetPosition(-w / 4, -h / 4, -450f);
+
+            quads.Add(quad);
         }
     }
 }
