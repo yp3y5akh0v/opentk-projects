@@ -31,15 +31,8 @@ namespace SharedLib
 
         public static Matrix4 GetViewMatrix(Camera camera)
         {
-            var lookat = Vector3.Zero;
+            var lookat = camera.GetLookAt();
             var camPos = camera.GetPosition();
-            var camRot = camera.GetRotation();
-
-            lookat.X = (float) (Math.Sin(camRot.X) * Math.Cos(camRot.Y));
-            lookat.Y = (float) Math.Sin(camRot.Y);
-            lookat.Z = (float) (Math.Cos(camRot.X) * Math.Cos(camRot.Y));
-
-            lookat.NormalizeFast();
 
             return Matrix4.LookAt(camPos, camPos + lookat, Vector3.UnitY);
         }

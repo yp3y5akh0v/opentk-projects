@@ -31,10 +31,25 @@ namespace MazeGen3D
         {
             return camera;
         }
+
+        public float GetRadius()
+        {
+            return radius;
+        }
         
         public Vector3 GetPosition()
         {
             return camera.GetPosition();
+        }
+
+        public void UpdatePosition(float dx, float dy, float dz)
+        {
+            camera.UpdatePosition(dx, dy, dz);
+        }
+
+        public Vector3 GetLookAt()
+        {
+            return camera.GetLookAt();
         }
     }
 }

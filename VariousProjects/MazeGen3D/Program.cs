@@ -29,7 +29,7 @@ namespace MazeGen3D
         {
             window = new GameWindow(1600, 900, GraphicsMode.Default, "Maze Gen 3D");
             window.CursorVisible = false;
-            window.WindowState = WindowState.Fullscreen;
+            //window.WindowState = WindowState.Fullscreen;
 
             window.Load += Window_Load;
             window.UpdateFrame += Window_UpdateFrame;
@@ -50,10 +50,16 @@ namespace MazeGen3D
 
             foreach (var quad in quads)
             {
-                //TODO
+                var undoDist = CollisionDetector.Detect(quad, player);
+                
+                if (undoDist < 0f)
+                {
+                    //TODO
+                    Console.WriteLine(undoDist);
+                }
             }
         }
-
+        
         private void Window_RenderFrame(object sender, FrameEventArgs e)
         {
             GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
@@ -65,11 +71,15 @@ namespace MazeGen3D
             shaderProgram.SetUniform("projectionMatrix", projectionMatrix);
 
             var viewMatrix = Transformation.GetViewMatrix(player.GetCamera());
-            shaderProgram.SetUniform("viewMatrix", viewMatrix);
+            shaderProgram.SetUniform("viewMatrix", viewMatrix);           
 
             foreach (var quad in quads)
             {
                 var worldMatrix = Transformation.GetWorldMatrix(quad.GetPosition(), quad.GetRotation(), quad.GetScale());
+                var normal = worldMatrix * new Vector4(quad.GetNormal().X, quad.GetNormal().Y, quad.GetNormal().Z, 1.0f);
+
+                quad.SetNormal(normal.X, normal.Y, normal.Z);
+
                 shaderProgram.SetUniform("worldMatrix", worldMatrix);
             }
 
@@ -97,7 +107,7 @@ namespace MazeGen3D
             GL.ClearColor(Color.FromArgb(0, 0, 0, 0));
             GL.Enable(EnableCap.DepthTest);
 
-            player = new Player(10f);
+            player = new Player(50f);
 
             shaderProgram = new ShaderProgram();
             shaderProgram.createVertexShader(Utils.loadShaderCode("vertex.glsl"));
@@ -121,26 +131,7 @@ namespace MazeGen3D
             float w = window.Width;
             float h = window.Height;
             
-            var quad = new Quad2DObject(
-                new float[]
-                {
-                    0f, 0f, 0f,
-                    w / 2, 0f, 0f,
-                    0f, h / 2, 0f,
-                    w / 2, h / 2, 0f
-                },
-                new float[]
-                {
-                    0f, 0f, 1f,
-                    0f, 0f, 1f,
-                    0f, 0f, 1f,
-                    0f, 0f, 1f
-                },
-                new int[]
-                {
-                    0, 1, 2,
-                    2, 1, 3
-                });
+            var quad = new Quad2DObject(Vector3.Zero, w / 2.0f, h / 2.0f, Vector3.UnitZ);
            
             quad.SetPosition(-w / 4, -h / 4, -450f);
 

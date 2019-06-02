@@ -27,15 +27,7 @@ namespace MazeGen2D
             segments[2] = new Segment2DObject(new float[] { x, y + h, z, x + w + epsX, y + h, z }, color, indices);
             segments[3] = new Segment2DObject(new float[] { x + w, y, z, x + w, y + h + epsY, z }, color, indices);
 
-            var shieldPositions = new float[]
-            {
-                x, y, z,
-                x, y + h, z,
-                x + w, y + h, z,
-                x + w, y, z
-            };
-
-            shield = new Quad2DObject(shieldPositions, new float[] { 0.2f, 0.2f, 0.2f }, new int[] { 0, 1, 2, 0, 2, 3 });            
+            shield = new Quad2DObject(new Vector3(x, y, z), w, h, 0.2f * Vector3.One);            
         }
 
         public void OpenTopDoor()
