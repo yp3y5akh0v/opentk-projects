@@ -42,11 +42,6 @@ namespace MazeGen3D
             return camera.GetPosition();
         }
 
-        public Vector3 GetPrevPosition()
-        {
-            return camera.GetPrevPosition();
-        }
-
         public void UpdatePosition(float dx, float dy, float dz)
         {
             camera.UpdatePosition(dx, dy, dz);
