@@ -29,7 +29,7 @@ namespace MazeGen3D
         {
             window = new GameWindow(1600, 900, GraphicsMode.Default, "Maze Gen 3D");
             window.CursorVisible = false;
-            //window.WindowState = WindowState.Fullscreen;
+            window.WindowState = WindowState.Fullscreen;
 
             window.Load += Window_Load;
             window.UpdateFrame += Window_UpdateFrame;
@@ -46,16 +46,26 @@ namespace MazeGen3D
 
         private void Window_UpdateFrame(object sender, FrameEventArgs e)
         {
+            var prevPos = player.GetPosition();
+
             player.Input(window, (float)e.Time);
+
+            var curPos = player.GetPosition();
+            var diffPos = curPos - prevPos;
 
             foreach (var quad in quads)
             {
-                var undoDist = CollisionDetector.Detect(quad, player);
-                
-                if (undoDist < 0f)
-                {
-                    //TODO
-                    Console.WriteLine(undoDist);
+                var detector = CollisionDetector.Detect(quad, player);
+
+                if (detector < 0.0f)
+                {                    
+                    var ds = diffPos.Normalized() * detector + curPos;
+                    player.SetPosition(ds);
+
+                    var norm = quad.GetNormal();
+                    var collidePos = diffPos - Vector3.Dot(norm, diffPos) * norm + prevPos;
+
+                    player.SetPosition(collidePos);
                 }
             }
         }

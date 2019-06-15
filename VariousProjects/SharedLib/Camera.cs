@@ -5,18 +5,26 @@ namespace SharedLib
 {
     public class Camera
     {
+        private Vector3 prevPosition;
         private Vector3 position;
         private Vector3 rotation;
 
         public Camera(Vector3 position, Vector3 rotation)
-        {
-            this.position = position;
+        {            
+            this.position = position;            
             this.rotation = rotation;
+
+            prevPosition = new Vector3(position);
         }
 
         public Vector3 GetPosition()
         {
             return position;
+        }
+
+        public Vector3 GetPrevPosition()
+        {
+            return prevPosition;
         }
 
         public Vector3 GetRotation()
@@ -29,6 +37,11 @@ namespace SharedLib
             position.X = x;
             position.Y = y;
             position.Z = z;
+        }
+
+        public void SetPosition(Vector3 v)
+        {
+            SetPosition(v.X, v.Y, v.Z);
         }
 
         public void SetRotation(float x, float y, float z)
@@ -66,6 +79,7 @@ namespace SharedLib
             offset += Vector3.Multiply(right, dx);
             offset += Vector3.Multiply(Vector3.UnitY, dy);
 
+            prevPosition = new Vector3(position);
             position += offset;
         }
     }
