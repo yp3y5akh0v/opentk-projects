@@ -204,7 +204,7 @@ namespace MazeGen3D
                 }
             }
 
-            plane = new Quad2DObject(Vector3.Zero, nrRooms * (rmWidth + gap), ncRooms * (rmWidth + gap), Vector3.UnitZ);
+            plane = new Quad2DObject(Vector3.Zero, ncRooms * (rmWidth + gap),  nrRooms * (rmWidth + gap), Vector3.UnitZ);
             plane.UpdateRotation(MathHelper.DegreesToRadians(-90f), 0.0f, 0.0f);
             plane.UpdatePosition(Vector3.UnitZ * nrRooms * (rmWidth + gap));
 
