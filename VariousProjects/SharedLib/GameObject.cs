@@ -13,42 +13,27 @@ namespace SharedLib
         public GameObject(Mesh mesh)
         {
             this.mesh = mesh;
-
             position = Vector3.Zero;
-            scale = 1;
+            scale = 1.0f;
             rotation = Vector3.Zero;
         }
 
-        public Vector3 GetPosition()
+        public virtual Vector3 GetPosition()
         {
             return position;
         }
 
-        public void SetPosition(float x, float y, float z)
-        {
-            position.X = x;
-            position.Y = y;
-            position.Z = z;
-        }
-
-        public void SetScale(float scale)
+        public virtual void SetScale(float scale)
         {
             this.scale = scale;
         }
 
-        public float GetScale()
+        public virtual float GetScale()
         {
             return scale;
         }
 
-        public void SetRotation(float x, float y, float z)
-        {
-            rotation.X = x;
-            rotation.Y = y;
-            rotation.Z = z;
-        }
-
-        public Vector3 GetRotation()
+        public virtual Vector3 GetRotation()
         {
             return rotation;
         }
@@ -73,18 +58,52 @@ namespace SharedLib
             mesh.Render();
         }
 
-        public void UpdatePosition(float dx, float dy, float dz)
+        public virtual void SetPosition(float x, float y, float z)
+        {
+            position.X = x;
+            position.Y = y;
+            position.Z = z;
+        }
+
+        public virtual void SetPosition(Vector3 ds)
+        {
+            SetPosition(ds.X, ds.Y, ds.Z);
+        }
+
+        public virtual void SetRotation(float x, float y, float z)
+        {
+            rotation.X = x;
+            rotation.Y = y;
+            rotation.Z = z;
+        }
+
+        public virtual void SetRotation(Vector3 ds)
+        {
+            SetRotation(ds.X, ds.Y, ds.Z);
+        }
+
+        public virtual void UpdatePosition(float dx, float dy, float dz)
         {
             position.X += dx;
             position.Y += dy;
             position.Z += dz;
         }
 
-        public void UpdateRotation(float dx, float dy, float dz)
+        public virtual void UpdatePosition(Vector3 ds)
+        {
+            UpdatePosition(ds.X, ds.Y, ds.Z);
+        }
+
+        public virtual void UpdateRotation(float dx, float dy, float dz)
         {
             rotation.X += dx;
             rotation.Y += dy;
             rotation.Z += dz;
-        }        
+        }
+
+        public virtual void UpdateRotation(Vector3 ds)
+        {
+            UpdateRotation(ds.X, ds.Y, ds.Z);
+        }
     }
 }
