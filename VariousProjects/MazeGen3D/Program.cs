@@ -10,15 +10,15 @@ namespace MazeGen3D
 {
     public class Program
     {
-        private readonly int nrRooms = 10;
-        private readonly int ncRooms = 10;
+        private readonly int nrRooms = 20;
+        private readonly int ncRooms = 20;
         private readonly float rmWidth = 800f;
         private readonly float rmHeight = 400f;
         private readonly float lightHeightOffset = 1000f;
-        private readonly float gap = 10f;
-        private readonly float zNear = 0.1f;
+        private readonly float gap = 5f;
+        private readonly float zNear = 25f;
         private readonly float zFar = 1000000f;
-        private readonly float fov = MathHelper.DegreesToRadians(70f);
+        private readonly float fov = MathHelper.DegreesToRadians(90f);
         private GameWindow window;
         private ShaderProgram shaderProgram;
         private Player player;
@@ -175,7 +175,7 @@ namespace MazeGen3D
             GL.ClearColor(Color.FromArgb(0, 0, 0, 0));
             GL.Enable(EnableCap.DepthTest);
 
-            player = new Player(50f);
+            player = new Player(100f);
 
             shaderProgram = new ShaderProgram();
             shaderProgram.createVertexShader(Utils.loadShaderCode("vertex.glsl"));
