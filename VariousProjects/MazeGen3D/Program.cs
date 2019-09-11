@@ -19,11 +19,16 @@ namespace MazeGen3D
         private readonly float zNear = 25f;
         private readonly float zFar = 1000000f;
         private readonly float fov = MathHelper.DegreesToRadians(90f);
+        private readonly int shadowMapWidth = 2048;
+        private readonly int shadowMapHeight = 2048;
         private GameWindow window;
         private ShaderProgram shaderProgram;
+        private ShaderProgram depthShaderProgram;
+        private ShadowMapFbo depthFbo;
+        private Light light;
         private Player player;
         private Room[] rooms;
-        private Quad2DObject plane;
+        private Quad plane;
         private Stack<int> stack;
         private int curInd;
 
@@ -37,7 +42,7 @@ namespace MazeGen3D
             window = new GameWindow(1600, 900, GraphicsMode.Default, "Maze Gen 3D")
             {
                 CursorVisible = false,
-                WindowState = WindowState.Fullscreen
+                WindowState = WindowState.Normal
             };
             window.Load += Window_Load;
             window.UpdateFrame += Window_UpdateFrame;
@@ -49,8 +54,12 @@ namespace MazeGen3D
         private void Window_Unload(object sender, EventArgs e)
         {
             shaderProgram.CleanUp();
+            depthShaderProgram.CleanUp();
+            depthFbo.CleanUp();
             foreach (var room in rooms)
                 room.CleanUp();
+            plane.CleanUp();
+            light.CleanUp();
         }
 
         private void Window_UpdateFrame(object sender, FrameEventArgs e)
@@ -119,7 +128,7 @@ namespace MazeGen3D
             }
         }
 
-        private void ApplyCollision(Quad2DObject obstacle, Player targetPlayer, Vector3 prevPos, Vector3 curPos)
+        private void ApplyCollision(Quad obstacle, Player targetPlayer, Vector3 prevPos, Vector3 curPos)
         {
             var detector = CollisionDetector.Detect(obstacle, targetPlayer);
 
@@ -132,38 +141,66 @@ namespace MazeGen3D
             targetPlayer.SetPosition(diffPos - Vector3.Dot(normal, diffPos) * normal + prevPos);
         }
 
-        private void Window_RenderFrame(object sender, FrameEventArgs e)
+        private void RenderGameObjects(ShaderProgram sp, string targetWorldMatrix)
         {
-            GL.Clear(ClearBufferMask.DepthBufferBit | ClearBufferMask.ColorBufferBit);
-            GL.Viewport(0, 0, window.Width, window.Height);
-
-            shaderProgram.bind();
-
-            shaderProgram.SetUniform("viewPos", player.GetPosition());
-            shaderProgram.SetUniform("light.color", Vector3.One);
-            shaderProgram.SetUniform("light.ambientStrength", 0.4f);
-            shaderProgram.SetUniform("light.position", new Vector3(ncRooms / 2f * (rmWidth + gap), rmHeight + 2f * player.GetRadius() + lightHeightOffset, nrRooms / 2f * (rmWidth + gap)));
-            shaderProgram.SetUniform("material.color", new Vector3(0.6f, 0.6f, 0.6f));
-            shaderProgram.SetUniform("material.specularStrength", 0.6f);
-            shaderProgram.SetUniform("material.shininess", 100f);
-            shaderProgram.SetUniform("projectionMatrix", 
-                Transformation.GetPerspectiveProjectionMatrix(fov, window.Width, window.Height, zNear, zFar));
-            shaderProgram.SetUniform("viewMatrix", Transformation.GetViewMatrix(player.GetCamera()));
-
             foreach (var room in rooms)
             {
                 var walls = room.GetWalls();
                 for (var index = 0; index < walls.Length; ++index)
                 {
-                    shaderProgram.SetUniform("worldMatrix", walls[index].GetTransformation());
+                    sp.SetUniform(targetWorldMatrix, walls[index].GetTransformation());
                     if (!room.GetDoor(index))
                         walls[index].Render();
                 }
             }
 
-            shaderProgram.SetUniform("worldMatrix", plane.GetTransformation());
+            sp.SetUniform(targetWorldMatrix, plane.GetTransformation());
             plane.Render();
 
+            sp.SetUniform(targetWorldMatrix, light.GetTransformation());
+            light.Render();
+        }
+
+        private void ConfigureShaderScene()
+        {
+            shaderProgram.SetUniform("viewPos", player.GetPosition());
+            shaderProgram.SetUniform("light.color", light.GetColor());
+            shaderProgram.SetUniform("light.ambientStrength", light.GetAmbientStrength());
+            shaderProgram.SetUniform("light.position", light.GetPosition());
+            shaderProgram.SetUniform("material.color", new Vector3(0.6f, 0.6f, 0.6f));
+            shaderProgram.SetUniform("material.specularStrength", 0.6f);
+            shaderProgram.SetUniform("material.shininess", 100f);
+            shaderProgram.SetUniform("projectionMatrix",
+                Transformation.GetPerspectiveProjectionMatrix(fov, window.Width, window.Height, zNear, zFar));
+            var camera = player.GetCamera();
+            shaderProgram.SetUniform("viewMatrix", Transformation.GetViewMatrix(camera.GetPosition(), Utils.GetLookAt(camera.GetRotation())));
+            shaderProgram.SetUniform("shadowMap", 0);
+        }
+
+        private void Window_RenderFrame(object sender, FrameEventArgs e)
+        {
+            var lightViewMatrix = Transformation.GetViewMatrix(light.GetPosition(), new Vector3(-1f, -1f, -1f).Normalized());
+            var lightProjectionMatrix = Matrix4.CreateOrthographicOffCenter(-rmWidth * nrRooms, rmWidth * nrRooms, -rmHeight, rmHeight, zNear, zFar);
+
+            var lightViewProjectionMatrix = lightProjectionMatrix * lightViewMatrix;
+
+            depthShaderProgram.bind();
+            depthFbo.Bind();
+            GL.Viewport(0, 0, depthFbo.GetWidth(), depthFbo.GetHeight());
+            GL.Clear(ClearBufferMask.DepthBufferBit);
+            depthShaderProgram.SetUniform("lightViewProjectionMatrix", lightViewProjectionMatrix);
+            RenderGameObjects(depthShaderProgram, "worldMatrix");
+            depthFbo.UnBind();
+            depthShaderProgram.unbind();
+
+            shaderProgram.bind();
+            GL.Viewport(0, 0, window.Width, window.Height);
+            GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
+            ConfigureShaderScene();
+            shaderProgram.SetUniform("lightViewProjectionMatrix", lightViewProjectionMatrix);
+            depthFbo.BindTexture(TextureUnit.Texture0);
+            RenderGameObjects(shaderProgram, "worldMatrix");
+            depthFbo.UnBindTexture();
             shaderProgram.unbind();
 
             GL.Flush();
@@ -174,23 +211,38 @@ namespace MazeGen3D
         {
             GL.ClearColor(Color.FromArgb(0, 0, 0, 0));
             GL.Enable(EnableCap.DepthTest);
+            GL.Enable(EnableCap.Texture2D);
 
             player = new Player(100f);
 
             shaderProgram = new ShaderProgram();
-            shaderProgram.createVertexShader(Utils.loadShaderCode("vertex.glsl"));
-            shaderProgram.createFragmentShader(Utils.loadShaderCode("fragment.glsl"));
+            shaderProgram.createVertexShader(Utils.LoadShaderCode("vertex.glsl"));
+            shaderProgram.createFragmentShader(Utils.LoadShaderCode("fragment.glsl"));
             shaderProgram.link();
             shaderProgram.createUniform("viewMatrix");
             shaderProgram.createUniform("worldMatrix");
             shaderProgram.createUniform("projectionMatrix");
+            shaderProgram.createUniform("lightViewProjectionMatrix");
             shaderProgram.createUniform("viewPos");
             shaderProgram.createUniform("light.color");
+            shaderProgram.createUniform("light.direction");
             shaderProgram.createUniform("light.ambientStrength");
             shaderProgram.createUniform("light.position");
             shaderProgram.createUniform("material.color");
             shaderProgram.createUniform("material.specularStrength");
             shaderProgram.createUniform("material.shininess");
+            shaderProgram.createUniform("shadowMap");
+
+            depthFbo = new ShadowMapFbo(shadowMapWidth, shadowMapHeight);
+            depthShaderProgram = new ShaderProgram();
+            depthShaderProgram.createVertexShader(Utils.LoadShaderCode("depth_shadowmap_vertex.glsl"));
+            depthShaderProgram.createFragmentShader(Utils.LoadShaderCode("depth_shadowmap_fragment.glsl"));
+            depthShaderProgram.link();
+            depthShaderProgram.createUniform("lightViewProjectionMatrix");
+            depthShaderProgram.createUniform("worldMatrix");
+
+            light = new Light();
+            light.SetPosition(new Vector3(ncRooms / 2f * (rmWidth + gap), rmHeight + 2 * player.GetRadius() + lightHeightOffset, nrRooms / 2f * (rmWidth + gap)));
 
             stack = new Stack<int>();
             rooms = new Room[nrRooms * ncRooms];
@@ -204,7 +256,7 @@ namespace MazeGen3D
                 }
             }
 
-            plane = new Quad2DObject(Vector3.Zero, ncRooms * (rmWidth + gap),  nrRooms * (rmWidth + gap), Vector3.UnitZ);
+            plane = new Quad(Vector3.Zero, ncRooms * (rmWidth + gap),  nrRooms * (rmWidth + gap), Vector3.UnitZ);
             plane.UpdateRotation(MathHelper.DegreesToRadians(-90f), 0.0f, 0.0f);
             plane.UpdatePosition(Vector3.UnitZ * nrRooms * (rmWidth + gap));
 

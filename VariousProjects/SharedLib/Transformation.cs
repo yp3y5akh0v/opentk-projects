@@ -1,5 +1,4 @@
 ﻿using OpenTK;
-using System;
 
 namespace SharedLib
 {
@@ -29,12 +28,9 @@ namespace SharedLib
             return result;
         }
 
-        public static Matrix4 GetViewMatrix(Camera camera)
+        public static Matrix4 GetViewMatrix(Vector3 position, Vector3 lookAt)
         {
-            var lookat = camera.GetLookAt();
-            var camPos = camera.GetPosition();
-
-            return Matrix4.LookAt(camPos, camPos + lookat, Vector3.UnitY);
+            return Matrix4.LookAt(position, position + lookAt, Vector3.UnitY);
         }
     }
 }

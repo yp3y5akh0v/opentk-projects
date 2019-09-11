@@ -6,7 +6,7 @@ namespace MazeGen3D
 {
     public class CollisionDetector
     {
-        public static float Detect(Quad2DObject obstacle, Player player)
+        public static float Detect(Quad obstacle, Player player)
         {
             var tr = FixedTransformation(obstacle);            
             var q = (tr * Vector4.UnitW).Xyz;
@@ -28,7 +28,7 @@ namespace MazeGen3D
             return MathHelper.Clamp(c, Math.Min(a, b), Math.Max(a, b));
         }
 
-        private static Matrix4 FixedTransformation(Quad2DObject obstacle)
+        private static Matrix4 FixedTransformation(Quad obstacle)
         {
             var result = Transformation.GetWorldMatrix(obstacle.GetPosition(), obstacle.GetRotation(), obstacle.GetScale());
             result.Transpose();

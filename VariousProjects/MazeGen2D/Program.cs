@@ -20,8 +20,7 @@ namespace MazeGen2D
 
         private readonly float zNear = 0.01f;
         private readonly float zFar = 1000f;
-        private readonly float fov = MathHelper.DegreesToRadians(60f);
-        private double ellapsedTime = 0f;
+        private double ellapsedTime;
 
         static void Main(string[] args)
         {
@@ -138,8 +137,8 @@ namespace MazeGen2D
             GL.ClearColor(Color.FromArgb(0, 0, 0, 0));
 
             shaderProgram = new ShaderProgram();
-            shaderProgram.createVertexShader(Utils.loadShaderCode("vertex.glsl"));
-            shaderProgram.createFragmentShader(Utils.loadShaderCode("fragment.glsl"));
+            shaderProgram.createVertexShader(Utils.LoadShaderCode("vertex.glsl"));
+            shaderProgram.createFragmentShader(Utils.LoadShaderCode("fragment.glsl"));
             shaderProgram.link();
 
             shaderProgram.createUniform("worldMatrix");

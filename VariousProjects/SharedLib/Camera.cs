@@ -49,25 +49,15 @@ namespace SharedLib
             rotation.Y = Math.Max(Math.Min(rotation.Y + dy, (float) Math.PI / 2), (float)- Math.PI / 2);
         }
 
-        public Vector3 GetLookAt()
-        {
-            var lookat = Vector3.Zero;
-
-            lookat.X = (float)(Math.Sin(rotation.X) * Math.Cos(rotation.Y));
-            lookat.Y = (float)Math.Sin(rotation.Y);
-            lookat.Z = (float)(Math.Cos(rotation.X) * Math.Cos(rotation.Y));
-
-            return lookat.Normalized();
-        }
-
         public void UpdatePosition(float dx, float dy, float dz)
         {
-            Vector3 offset = Vector3.Zero, lookat = GetLookAt(), right = Vector3.Zero;
+            var offset = Vector3.Zero;
+            var lookAt = Utils.GetLookAt(rotation);
+            var right = Vector3.Cross(Vector3.UnitY, lookAt);
 
-            right = Vector3.Cross(Vector3.UnitY, lookat);
             right.NormalizeFast();
 
-            offset += Vector3.Multiply(lookat, dz);
+            offset += Vector3.Multiply(lookAt, dz);
             offset += Vector3.Multiply(right, dx);
             offset += Vector3.Multiply(Vector3.UnitY, dy);
             

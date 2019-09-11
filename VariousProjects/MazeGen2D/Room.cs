@@ -6,28 +6,25 @@ namespace MazeGen2D
     public class Room
     {
         private bool[] doors;
-        private Segment2DObject[] segments;
-        private Quad2DObject shield;
+        private Segment[] segments;
+        private Quad shield;
         private bool visited;
 
         public Room(float x, float y, float z, float w, float h)
         {
             doors = new bool[4];
-            segments = new Segment2DObject[4];
+            segments = new Segment[4];
             visited = false;
 
             float epsX = w * 0.5f;
             float epsY = h * 0.5f;
 
-            var color = new float[] { 1f, 1f, 1f }; // using it as the color, not normal for Mesh constructor
-            var indices = new int[] { 0, 1 };
+            segments[0] = new Segment(new Vector3(x, y, z), new Vector3(x + w + epsX, y, z));
+            segments[1] = new Segment(new Vector3(x, y, z), new Vector3(x, y + h + epsY, z));
+            segments[2] = new Segment(new Vector3(x, y + h, z), new Vector3(x + w + epsX, y + h, z));
+            segments[3] = new Segment(new Vector3(x + w, y, z), new Vector3(x + w, y + h + epsY, z));
 
-            segments[0] = new Segment2DObject(new float[] { x, y, z, x + w + epsX, y, z }, color, indices);
-            segments[1] = new Segment2DObject(new float[] { x, y, z, x, y + h + epsY, z }, color, indices);
-            segments[2] = new Segment2DObject(new float[] { x, y + h, z, x + w + epsX, y + h, z }, color, indices);
-            segments[3] = new Segment2DObject(new float[] { x + w, y, z, x + w, y + h + epsY, z }, color, indices);
-
-            shield = new Quad2DObject(new Vector3(x, y, z), w, h, 0.2f * Vector3.One);            
+            shield = new Quad(new Vector3(x, y, z), w, h, 0.2f * Vector3.One);            
         }
 
         public void OpenTopDoor()
