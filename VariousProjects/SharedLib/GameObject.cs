@@ -47,17 +47,17 @@ namespace SharedLib
             return _mesh;
         }
 
-        public void SetWidth(float w)
+        public virtual void SetWidth(float w)
         {
             GL.LineWidth(w);
         }
 
-        public void CleanUp()
+        public virtual void CleanUp()
         {
             _mesh?.CleanUp();
         }
 
-        public void Render()
+        public virtual void Render()
         {
             _mesh?.Render();
         }

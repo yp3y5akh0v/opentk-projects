@@ -84,7 +84,7 @@ namespace SharedLib
                 var a = face.Item1;
                 var b = face.Item2;
                 var c = face.Item3;
-                var n = Utils.SafeNormalized(GetFaceNormal(mesh, face.Item1, face.Item2, face.Item3));
+                var n = Utils.SafeNormalized(GetFaceNormal(mesh, a, b, c));
 
                 mesh.AddTripleIndices(a, b, c);
                 mesh.AddTripleNormals(n, n, n);

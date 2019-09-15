@@ -19,12 +19,12 @@ namespace MazeGen2D
             float epsX = w * 0.5f;
             float epsY = h * 0.5f;
 
-            segments[0] = new Segment(new Vector3(x, y, z), new Vector3(x + w + epsX, y, z));
-            segments[1] = new Segment(new Vector3(x, y, z), new Vector3(x, y + h + epsY, z));
-            segments[2] = new Segment(new Vector3(x, y + h, z), new Vector3(x + w + epsX, y + h, z));
-            segments[3] = new Segment(new Vector3(x + w, y, z), new Vector3(x + w, y + h + epsY, z));
+            segments[0] = new Segment(new Vector3(x, y, z), new Vector3(x + w + epsX, y, z), Vector3.One);
+            segments[1] = new Segment(new Vector3(x, y, z), new Vector3(x, y + h + epsY, z), Vector3.One);
+            segments[2] = new Segment(new Vector3(x, y + h, z), new Vector3(x + w + epsX, y + h, z), Vector3.One);
+            segments[3] = new Segment(new Vector3(x + w, y, z), new Vector3(x + w, y + h + epsY, z), Vector3.One);
 
-            shield = new Quad(new Vector3(x, y, z), w, h, 0.2f * Vector3.One);            
+            shield = new Quad(new Vector3(x, y, z), w, h, Vector3.Zero);            
         }
 
         public void OpenTopDoor()

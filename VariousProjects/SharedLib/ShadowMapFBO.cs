@@ -22,6 +22,7 @@ namespace SharedLib
             texture.Alloc(PixelInternalFormat.DepthComponent, PixelFormat.DepthComponent, PixelType.Float);
 
             GL.FramebufferTexture2D(FramebufferTarget.Framebuffer, FramebufferAttachment.DepthAttachment, texture.GetTextureTarget(), texture.GetId(), 0);
+
             GL.ReadBuffer(ReadBufferMode.None);
             GL.DrawBuffer(DrawBufferMode.None);
 

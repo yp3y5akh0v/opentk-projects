@@ -10,11 +10,11 @@ namespace MazeGen3D
 {
     public class Program
     {
-        private readonly int nrRooms = 20;
-        private readonly int ncRooms = 20;
+        private readonly int nrRooms = 25;
+        private readonly int ncRooms = 25;
         private readonly float rmWidth = 800f;
         private readonly float rmHeight = 400f;
-        private readonly float lightHeightOffset = 1000f;
+        private readonly float lightHeightOffset = 5000f;
         private readonly float gap = 5f;
         private readonly float zNear = 25f;
         private readonly float zFar = 1000000f;
@@ -29,6 +29,7 @@ namespace MazeGen3D
         private Player player;
         private Room[] rooms;
         private Quad plane;
+        private IcoSphere ico;
         private Stack<int> stack;
         private int curInd;
 
@@ -60,6 +61,7 @@ namespace MazeGen3D
                 room.CleanUp();
             plane.CleanUp();
             light.CleanUp();
+            ico.CleanUp();
         }
 
         private void Window_UpdateFrame(object sender, FrameEventArgs e)
@@ -159,6 +161,9 @@ namespace MazeGen3D
 
             sp.SetUniform(targetWorldMatrix, light.GetTransformation());
             light.Render();
+
+            sp.SetUniform(targetWorldMatrix, ico.GetTransformation());
+            ico.Render();
         }
 
         private void ConfigureShaderScene()
@@ -167,6 +172,7 @@ namespace MazeGen3D
             shaderProgram.SetUniform("light.color", light.GetColor());
             shaderProgram.SetUniform("light.ambientStrength", light.GetAmbientStrength());
             shaderProgram.SetUniform("light.position", light.GetPosition());
+            shaderProgram.SetUniform("light.direction", light.GetDirection());
             shaderProgram.SetUniform("material.color", new Vector3(0.6f, 0.6f, 0.6f));
             shaderProgram.SetUniform("material.specularStrength", 0.6f);
             shaderProgram.SetUniform("material.shininess", 100f);
@@ -179,16 +185,17 @@ namespace MazeGen3D
 
         private void Window_RenderFrame(object sender, FrameEventArgs e)
         {
-            var lightViewMatrix = Transformation.GetViewMatrix(light.GetPosition(), new Vector3(-1f, -1f, -1f).Normalized());
-            var lightProjectionMatrix = Matrix4.CreateOrthographicOffCenter(-rmWidth * nrRooms, rmWidth * nrRooms, -rmHeight, rmHeight, zNear, zFar);
-
-            var lightViewProjectionMatrix = lightProjectionMatrix * lightViewMatrix;
+            var lightViewMatrix = Transformation.GetViewMatrix(light.GetPosition(), light.GetDirection());
+            var maxLightWidthProj = Math.Max(nrRooms * (rmWidth + gap), ncRooms * (rmWidth + gap));
+            var maxLightHeightProj = rmHeight * 10000f;
+            var lightProjectionMatrix = Transformation.GetOrthoProjectionMatrix(maxLightWidthProj, maxLightHeightProj, zNear, zFar);
 
             depthShaderProgram.bind();
             depthFbo.Bind();
             GL.Viewport(0, 0, depthFbo.GetWidth(), depthFbo.GetHeight());
             GL.Clear(ClearBufferMask.DepthBufferBit);
-            depthShaderProgram.SetUniform("lightViewProjectionMatrix", lightViewProjectionMatrix);
+            depthShaderProgram.SetUniform("lightViewMatrix", lightViewMatrix);
+            depthShaderProgram.SetUniform("lightProjectionMatrix", lightProjectionMatrix);
             RenderGameObjects(depthShaderProgram, "worldMatrix");
             depthFbo.UnBind();
             depthShaderProgram.unbind();
@@ -197,7 +204,8 @@ namespace MazeGen3D
             GL.Viewport(0, 0, window.Width, window.Height);
             GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
             ConfigureShaderScene();
-            shaderProgram.SetUniform("lightViewProjectionMatrix", lightViewProjectionMatrix);
+            shaderProgram.SetUniform("lightViewMatrix", lightViewMatrix);
+            shaderProgram.SetUniform("lightProjectionMatrix", lightProjectionMatrix);
             depthFbo.BindTexture(TextureUnit.Texture0);
             RenderGameObjects(shaderProgram, "worldMatrix");
             depthFbo.UnBindTexture();
@@ -222,7 +230,8 @@ namespace MazeGen3D
             shaderProgram.createUniform("viewMatrix");
             shaderProgram.createUniform("worldMatrix");
             shaderProgram.createUniform("projectionMatrix");
-            shaderProgram.createUniform("lightViewProjectionMatrix");
+            shaderProgram.createUniform("lightViewMatrix");
+            shaderProgram.createUniform("lightProjectionMatrix");
             shaderProgram.createUniform("viewPos");
             shaderProgram.createUniform("light.color");
             shaderProgram.createUniform("light.direction");
@@ -232,17 +241,25 @@ namespace MazeGen3D
             shaderProgram.createUniform("material.specularStrength");
             shaderProgram.createUniform("material.shininess");
             shaderProgram.createUniform("shadowMap");
-
+            
             depthFbo = new ShadowMapFbo(shadowMapWidth, shadowMapHeight);
             depthShaderProgram = new ShaderProgram();
             depthShaderProgram.createVertexShader(Utils.LoadShaderCode("depth_shadowmap_vertex.glsl"));
             depthShaderProgram.createFragmentShader(Utils.LoadShaderCode("depth_shadowmap_fragment.glsl"));
             depthShaderProgram.link();
-            depthShaderProgram.createUniform("lightViewProjectionMatrix");
+            depthShaderProgram.createUniform("lightViewMatrix");
+            depthShaderProgram.createUniform("lightProjectionMatrix");
             depthShaderProgram.createUniform("worldMatrix");
 
             light = new Light();
+            light.SetDirection(new Vector3(0f, -1f, 1f));
             light.SetPosition(new Vector3(ncRooms / 2f * (rmWidth + gap), rmHeight + 2 * player.GetRadius() + lightHeightOffset, nrRooms / 2f * (rmWidth + gap)));
+            light.InitiateBeam(100000f);
+
+            player.SetPosition(light.GetPosition() - 10 * light.GetRadius() * Vector3.One);
+
+            ico = new IcoSphere(100f, 5);
+            ico.SetPosition(light.GetPosition() + 1000 * light.GetDirection());
 
             stack = new Stack<int>();
             rooms = new Room[nrRooms * ncRooms];

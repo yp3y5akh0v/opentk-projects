@@ -8,7 +8,7 @@ namespace SharedLib
         private Vector3 _beginPoint { get; set; }
         private Vector3 _endPoint { get; set; }
 
-        public Segment(Vector3 beginPoint, Vector3 endPoint)
+        public Segment(Vector3 beginPoint, Vector3 endPoint, Vector3 normal)
         {
             _beginPoint = beginPoint;
             _endPoint = endPoint;
@@ -18,7 +18,7 @@ namespace SharedLib
             mesh.AddVertex(beginPoint);
             mesh.AddVertex(endPoint);
 
-            mesh.AddNormal(Vector3.One);
+            mesh.AddNormal(normal);
 
             mesh.AddIndex(0);
             mesh.AddIndex(1);

@@ -4,6 +4,7 @@ using OpenTK.Graphics;
 using OpenTK.Graphics.OpenGL;
 using System.Drawing;
 using System.Collections.Generic;
+using OpenTK.Input;
 using SharedLib;
 
 namespace MazeGen2D
@@ -42,14 +43,20 @@ namespace MazeGen2D
         {
             shaderProgram.CleanUp();
 
-            for (var i = 0; i < rooms.Length; i++)
+            foreach (var room in rooms)
             {
-                rooms[i].CleanUp();
+                room.CleanUp();
             }
         }
 
         private void Window_UpdateFrame(object sender, FrameEventArgs e)
         {
+            var state = Keyboard.GetState();
+            if (state.IsKeyDown(Key.Escape))
+            {
+                window.Exit();
+            }
+
             ellapsedTime += e.Time;
             if (ellapsedTime > 0.05)
             {

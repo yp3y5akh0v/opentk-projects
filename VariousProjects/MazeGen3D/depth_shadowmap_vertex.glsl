@@ -3,9 +3,10 @@
 layout (location = 0) in vec3 position;
 
 uniform mat4 worldMatrix;
-uniform mat4 lightViewProjectionMatrix;
+uniform mat4 lightViewMatrix;
+uniform mat4 lightProjectionMatrix;
 
 void main()
 {
-	gl_Position = lightViewProjectionMatrix * worldMatrix * vec4(position, 1.0);
+	gl_Position = lightProjectionMatrix * lightViewMatrix * worldMatrix * vec4(position, 1.0);
 }
