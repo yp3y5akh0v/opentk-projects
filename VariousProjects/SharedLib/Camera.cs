@@ -46,7 +46,7 @@ namespace SharedLib
         public void UpdateRotation(float dx, float dy)
         {
             rotation.X = (rotation.X + dx) % ((float) Math.PI * 2);
-            rotation.Y = Math.Max(Math.Min(rotation.Y + dy, (float) Math.PI / 2 - 0.001f), (float)- Math.PI / 2 + 0.001f);
+            rotation.Y = Math.Max(Math.Min(rotation.Y + dy, (float) Math.PI / 2 - 0.05f), (float)- Math.PI / 2 + 0.05f);
         }
 
         public void UpdatePosition(float dx, float dy, float dz)

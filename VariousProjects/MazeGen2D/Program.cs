@@ -111,7 +111,7 @@ namespace MazeGen2D
             GL.Clear(ClearBufferMask.ColorBufferBit);
             GL.Viewport(0, 0, window.Width, window.Height);
 
-            shaderProgram.bind();
+            shaderProgram.Bind();
 
             var projectionMatrix = Transformation.GetOrthoProjectionMatrix(window.Width, window.Height, zNear, zFar);
             shaderProgram.SetUniform("projectionMatrix", projectionMatrix);
@@ -133,7 +133,7 @@ namespace MazeGen2D
                 rooms[i].Render();
             }
 
-            shaderProgram.unbind();
+            shaderProgram.Unbind();
 
             GL.Flush();
             window.SwapBuffers();
@@ -144,13 +144,13 @@ namespace MazeGen2D
             GL.ClearColor(Color.FromArgb(0, 0, 0, 0));
 
             shaderProgram = new ShaderProgram();
-            shaderProgram.createVertexShader(Utils.LoadShaderCode("vertex.glsl"));
-            shaderProgram.createFragmentShader(Utils.LoadShaderCode("fragment.glsl"));
-            shaderProgram.link();
+            shaderProgram.CreateVertexShader(Utils.LoadShaderCode("vertex.glsl"));
+            shaderProgram.CreateFragmentShader(Utils.LoadShaderCode("fragment.glsl"));
+            shaderProgram.Link();
 
-            shaderProgram.createUniform("worldMatrix");
-            shaderProgram.createUniform("projectionMatrix");
-            shaderProgram.createUniform("maskColor");
+            shaderProgram.CreateUniform("worldMatrix");
+            shaderProgram.CreateUniform("projectionMatrix");
+            shaderProgram.CreateUniform("maskColor");
 
             stack = new Stack<int>();
             rooms = new Room[nrRooms * ncRooms];

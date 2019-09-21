@@ -53,7 +53,13 @@ namespace SharedLib
                 window.Exit();
             }
 
-            var ds = Constants.SPEED * interval * posDisp;
+            var speedMultiplier = 1f;
+            if (state.IsKeyDown(Key.ShiftLeft))
+            {
+                speedMultiplier = Constants.SPEEDMULTIPLIER;
+            }
+
+            var ds = (speedMultiplier * Constants.SPEED * interval) * posDisp;
 
             camera.UpdatePosition(ds.X, ds.Y, ds.Z);
         }

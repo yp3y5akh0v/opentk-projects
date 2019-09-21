@@ -20,7 +20,7 @@ namespace SharedLib
             uniforms = new Dictionary<string, int>();
         }
 
-        private int createShader(string shaderCode, ShaderType shaderType)
+        private int CreateShader(string shaderCode, ShaderType shaderType)
         {
             var shaderId = GL.CreateShader(shaderType);
 
@@ -31,17 +31,27 @@ namespace SharedLib
             return shaderId;
         }
 
-        public void createVertexShader(string shaderCode)
+        public string GetVertexInfoLog()
         {
-            vertexShaderId = createShader(shaderCode, ShaderType.VertexShader);
+            return GL.GetShaderInfoLog(vertexShaderId);
         }
 
-        public void createFragmentShader(string shaderCode)
+        public string GetFragmentInfoLog()
         {
-            fragmentShaderId = createShader(shaderCode, ShaderType.FragmentShader);
+            return GL.GetShaderInfoLog(fragmentShaderId);
         }
 
-        public void createUniform(string uniformName)
+        public void CreateVertexShader(string shaderCode)
+        {
+            vertexShaderId = CreateShader(shaderCode, ShaderType.VertexShader);
+        }
+
+        public void CreateFragmentShader(string shaderCode)
+        {
+            fragmentShaderId = CreateShader(shaderCode, ShaderType.FragmentShader);
+        }
+
+        public void CreateUniform(string uniformName)
         {
             int uniformLocation = GL.GetUniformLocation(programId, uniformName);
             uniforms.Add(uniformName, uniformLocation);
@@ -62,7 +72,12 @@ namespace SharedLib
             GL.Uniform1(uniforms[uniformName], value);
         }
 
-        public void link()
+        public void SetUniform(string uniformName, int value)
+        {
+            GL.Uniform1(uniforms[uniformName], value);
+        }
+
+        public void Link()
         {
             GL.LinkProgram(programId);
 
@@ -77,19 +92,19 @@ namespace SharedLib
             }
         }
 
-        public void bind()
+        public void Bind()
         {
             GL.UseProgram(programId);
         }
 
-        public void unbind()
+        public void Unbind()
         {
             GL.UseProgram(0);
         }
 
         public void CleanUp()
         {
-            bind();
+            Bind();
             if (programId != 0)
             {
                 GL.DeleteProgram(programId);

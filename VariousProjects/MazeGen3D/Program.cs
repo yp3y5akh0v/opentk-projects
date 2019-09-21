@@ -190,7 +190,7 @@ namespace MazeGen3D
             var maxLightHeightProj = rmHeight * 10000f;
             var lightProjectionMatrix = Transformation.GetOrthoProjectionMatrix(maxLightWidthProj, maxLightHeightProj, zNear, zFar);
 
-            depthShaderProgram.bind();
+            depthShaderProgram.Bind();
             depthFbo.Bind();
             GL.Viewport(0, 0, depthFbo.GetWidth(), depthFbo.GetHeight());
             GL.Clear(ClearBufferMask.DepthBufferBit);
@@ -198,9 +198,9 @@ namespace MazeGen3D
             depthShaderProgram.SetUniform("lightProjectionMatrix", lightProjectionMatrix);
             RenderGameObjects(depthShaderProgram, "worldMatrix");
             depthFbo.UnBind();
-            depthShaderProgram.unbind();
+            depthShaderProgram.Unbind();
 
-            shaderProgram.bind();
+            shaderProgram.Bind();
             GL.Viewport(0, 0, window.Width, window.Height);
             GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
             ConfigureShaderScene();
@@ -209,7 +209,7 @@ namespace MazeGen3D
             depthFbo.BindTexture(TextureUnit.Texture0);
             RenderGameObjects(shaderProgram, "worldMatrix");
             depthFbo.UnBindTexture();
-            shaderProgram.unbind();
+            shaderProgram.Unbind();
 
             GL.Flush();
             window.SwapBuffers();
@@ -224,39 +224,39 @@ namespace MazeGen3D
             player = new Player(100f);
 
             shaderProgram = new ShaderProgram();
-            shaderProgram.createVertexShader(Utils.LoadShaderCode("vertex.glsl"));
-            shaderProgram.createFragmentShader(Utils.LoadShaderCode("fragment.glsl"));
-            shaderProgram.link();
-            shaderProgram.createUniform("viewMatrix");
-            shaderProgram.createUniform("worldMatrix");
-            shaderProgram.createUniform("projectionMatrix");
-            shaderProgram.createUniform("lightViewMatrix");
-            shaderProgram.createUniform("lightProjectionMatrix");
-            shaderProgram.createUniform("viewPos");
-            shaderProgram.createUniform("light.color");
-            shaderProgram.createUniform("light.direction");
-            shaderProgram.createUniform("light.ambientStrength");
-            shaderProgram.createUniform("light.position");
-            shaderProgram.createUniform("material.color");
-            shaderProgram.createUniform("material.specularStrength");
-            shaderProgram.createUniform("material.shininess");
-            shaderProgram.createUniform("shadowMap");
+            shaderProgram.CreateVertexShader(Utils.LoadShaderCode("vertex.glsl"));
+            shaderProgram.CreateFragmentShader(Utils.LoadShaderCode("fragment.glsl"));
+            shaderProgram.Link();
+            shaderProgram.CreateUniform("viewMatrix");
+            shaderProgram.CreateUniform("worldMatrix");
+            shaderProgram.CreateUniform("projectionMatrix");
+            shaderProgram.CreateUniform("lightViewMatrix");
+            shaderProgram.CreateUniform("lightProjectionMatrix");
+            shaderProgram.CreateUniform("viewPos");
+            shaderProgram.CreateUniform("light.color");
+            shaderProgram.CreateUniform("light.direction");
+            shaderProgram.CreateUniform("light.ambientStrength");
+            shaderProgram.CreateUniform("light.position");
+            shaderProgram.CreateUniform("material.color");
+            shaderProgram.CreateUniform("material.specularStrength");
+            shaderProgram.CreateUniform("material.shininess");
+            shaderProgram.CreateUniform("shadowMap");
             
             depthFbo = new ShadowMapFbo(shadowMapWidth, shadowMapHeight);
             depthShaderProgram = new ShaderProgram();
-            depthShaderProgram.createVertexShader(Utils.LoadShaderCode("depth_shadowmap_vertex.glsl"));
-            depthShaderProgram.createFragmentShader(Utils.LoadShaderCode("depth_shadowmap_fragment.glsl"));
-            depthShaderProgram.link();
-            depthShaderProgram.createUniform("lightViewMatrix");
-            depthShaderProgram.createUniform("lightProjectionMatrix");
-            depthShaderProgram.createUniform("worldMatrix");
+            depthShaderProgram.CreateVertexShader(Utils.LoadShaderCode("depth_shadowmap_vertex.glsl"));
+            depthShaderProgram.CreateFragmentShader(Utils.LoadShaderCode("depth_shadowmap_fragment.glsl"));
+            depthShaderProgram.Link();
+            depthShaderProgram.CreateUniform("lightViewMatrix");
+            depthShaderProgram.CreateUniform("lightProjectionMatrix");
+            depthShaderProgram.CreateUniform("worldMatrix");
 
             light = new Light();
-            light.SetDirection(new Vector3(0f, -1f, 1f));
+            light.SetDirection(new Vector3(-1f, -1f, -1f));
             light.SetPosition(new Vector3(ncRooms / 2f * (rmWidth + gap), rmHeight + 2 * player.GetRadius() + lightHeightOffset, nrRooms / 2f * (rmWidth + gap)));
             light.InitiateBeam(100000f);
 
-            player.SetPosition(light.GetPosition() - 10 * light.GetRadius() * Vector3.One);
+            player.SetPosition(light.GetPosition() - 1.1f * light.GetRadius() * Vector3.One);
 
             ico = new IcoSphere(100f, 5);
             ico.SetPosition(light.GetPosition() + 1000 * light.GetDirection());
