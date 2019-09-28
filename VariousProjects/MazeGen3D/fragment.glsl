@@ -15,10 +15,10 @@ struct Light {
 
 uniform Material material;
 uniform Light light;
-uniform vec3 viewPos;
 uniform sampler2D shadowMap;
 
 in vec3 fragPos;
+in vec3 fragViewPos;
 in vec3 fragNorm; 
 in vec4 fragPosFromLight;
 out vec4 fragColor;
@@ -53,7 +53,7 @@ vec3 calcDiffuseSpecular(vec3 lightDir)
 	vec3 diffuse = diffuseFactor * light.color;
 
 	vec3 refLightDir = normalize(reflect(-lightDir, norm));
-	vec3 invViewDir = normalize(viewPos - fragPos);
+	vec3 invViewDir = normalize(fragViewPos - fragPos);
 	float specularFactor = max(dot(refLightDir, invViewDir), 0);
 	vec3 specular = material.specularStrength * pow(specularFactor, material.shininess) * light.color;
 	
