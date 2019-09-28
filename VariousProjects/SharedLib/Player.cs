@@ -63,5 +63,10 @@ namespace SharedLib
         {
             camera.SetRotationZ(z);
         }
+
+        public void UpdatePosition(Vector3 offset)
+        {
+            camera.UpdatePosition(offset);
+        }
     }
 }

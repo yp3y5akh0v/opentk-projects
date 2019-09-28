@@ -23,12 +23,20 @@ namespace MazeGen3D
             return diff;
         }
 
+        public static float Detect(IcoSphere obstacle, Player player)
+        {
+            var r1 = obstacle.GetRadius();
+            var r2 = player.GetRadius();
+            var d = (obstacle.GetPosition() - player.GetPosition()).Length;
+            return d - r1 - r2;
+        }
+
         private static float FixedClamp(float c, float a, float b)
         {
             return MathHelper.Clamp(c, Math.Min(a, b), Math.Max(a, b));
         }
 
-        private static Matrix4 FixedTransformation(Quad obstacle)
+        private static Matrix4 FixedTransformation(GameObject obstacle)
         {
             var result = Transformation.GetWorldMatrix(obstacle.GetPosition(), obstacle.GetRotation(), obstacle.GetScale());
             result.Transpose();

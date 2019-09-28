@@ -84,6 +84,9 @@ namespace MazeGen3D
                 }
             }
 
+            ApplyCollision(light, player);
+            ApplyCollision(ico, player);
+
             var rowCurInd = curInd / ncRooms;
             var colCurInd = curInd % ncRooms;
             var neighborInd = PickUpNeighbor(rowCurInd, colCurInd);
@@ -134,13 +137,28 @@ namespace MazeGen3D
         {
             var detector = CollisionDetector.Detect(obstacle, targetPlayer);
 
-            if (detector >= 0.0f)
+            if (detector > 0.0f)
                 return;
 
             var diffPos = curPos - prevPos;
-            targetPlayer.SetPosition(diffPos.Normalized() * detector + curPos);
+            targetPlayer.UpdatePosition(diffPos.Normalized() * detector);
             var normal = obstacle.GetNormal();
-            targetPlayer.SetPosition(diffPos - Vector3.Dot(normal, diffPos) * normal + prevPos);
+            targetPlayer.SetPosition( curPos - Vector3.Dot(normal, diffPos) * normal);
+        }
+
+        private void ApplyCollision(IcoSphere obstacle, Player targetPlayer)
+        {
+            var detector = CollisionDetector.Detect(obstacle, targetPlayer);
+
+            if (detector > 0.0f)
+                return;
+
+            var playerToObstacle = targetPlayer.GetPosition() - obstacle.GetPosition();
+
+            if (!(playerToObstacle.Length > Constants.EPS)) return;
+
+            var obstacleNormal = playerToObstacle.Normalized();
+            targetPlayer.SetPosition((obstacle.GetRadius() + targetPlayer.GetRadius()) * obstacleNormal + obstacle.GetPosition());
         }
 
         private void RenderGameObjects(ShaderProgram sp, string targetWorldMatrix)
@@ -256,7 +274,7 @@ namespace MazeGen3D
             light.SetPosition(new Vector3(ncRooms / 2f * (rmWidth + gap), rmHeight + 2 * player.GetRadius() + lightHeightOffset, nrRooms / 2f * (rmWidth + gap)));
             light.InitiateBeam(100000f);
 
-            player.SetPosition(light.GetPosition() - 1.1f * light.GetRadius() * Vector3.One);
+            player.SetPosition(light.GetPosition() - 1.2f * light.GetRadius() * Vector3.One);
 
             ico = new IcoSphere(100f, 5);
             ico.SetPosition(light.GetPosition() + 1000 * light.GetDirection());

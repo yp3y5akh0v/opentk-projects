@@ -83,5 +83,10 @@ namespace SharedLib
             
             position += offset;
         }
+
+        public void UpdatePosition(Vector3 offset)
+        {
+            UpdatePosition(offset.X, offset.Y, offset.Z);
+        }
     }
 }
