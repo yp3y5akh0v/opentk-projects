@@ -43,6 +43,26 @@ namespace SharedLib
             rotation.Z = z;
         }
 
+        public void SetRotation(Vector3 v)
+        {
+            SetRotation(v.X, v.Y, v.Z);
+        }
+
+        public void SetRotationX(float x)
+        {
+            rotation.X = x;
+        }
+
+        public void SetRotationY(float y)
+        {
+            rotation.Y = y;
+        }
+
+        public void SetRotationZ(float z)
+        {
+            rotation.Z = z;
+        }
+
         public void UpdateRotation(float dx, float dy)
         {
             rotation.X = (rotation.X + dx) % ((float) Math.PI * 2);

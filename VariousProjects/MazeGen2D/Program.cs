@@ -18,10 +18,8 @@ namespace MazeGen2D
         private readonly int nrRooms = 20;
         private readonly int ncRooms = 20;
         private int curInd;
-
         private readonly float zNear = 0.01f;
         private readonly float zFar = 1000f;
-        private double ellapsedTime;
 
         static void Main(string[] args)
         {
@@ -57,52 +55,47 @@ namespace MazeGen2D
                 window.Exit();
             }
 
-            ellapsedTime += e.Time;
-            if (ellapsedTime > 0.05)
+            int rowCurInd = curInd / ncRooms;
+            int colCurInd = curInd % ncRooms;
+
+            int neighborInd = PickUpNeighbor(rowCurInd, colCurInd);
+            if (neighborInd > -1)
             {
-                int rowCurInd = curInd / ncRooms;
-                int colCurInd = curInd % ncRooms;
+                stack.Push(curInd);
 
-                int neighborInd = PickUpNeighbor(rowCurInd, colCurInd);
-                if (neighborInd > -1)
+                int rowNeighborInd = neighborInd / ncRooms;
+                int colNeighborInd = neighborInd % ncRooms;
+
+                if (rowCurInd < rowNeighborInd)
                 {
-                    stack.Push(curInd);
-
-                    int rowNeighborInd = neighborInd / ncRooms;
-                    int colNeighborInd = neighborInd % ncRooms;
-
-                    if (rowCurInd < rowNeighborInd)
-                    {
-                        rooms[curInd].OpenBottomDoor();
-                        rooms[neighborInd].OpenTopDoor();
-                    }
-
-                    if (rowCurInd > rowNeighborInd)
-                    {
-                        rooms[curInd].OpenTopDoor();
-                        rooms[neighborInd].OpenBottomDoor();
-                    }
-
-                    if (colCurInd < colNeighborInd)
-                    {
-                        rooms[curInd].OpenRightDoor();
-                        rooms[neighborInd].OpenLeftDoor();
-                    }
-
-                    if (colCurInd > colNeighborInd)
-                    {
-                        rooms[curInd].OpenLeftDoor();
-                        rooms[neighborInd].OpenRightDoor();
-                    }
-
-                    curInd = neighborInd;
-                    rooms[curInd].Visit();
+                    rooms[curInd].OpenBottomDoor();
+                    rooms[neighborInd].OpenTopDoor();
                 }
-                else if (stack.Count > 0)
+
+                if (rowCurInd > rowNeighborInd)
                 {
-                    curInd = stack.Pop();
+                    rooms[curInd].OpenTopDoor();
+                    rooms[neighborInd].OpenBottomDoor();
                 }
-                ellapsedTime = 0f;
+
+                if (colCurInd < colNeighborInd)
+                {
+                    rooms[curInd].OpenRightDoor();
+                    rooms[neighborInd].OpenLeftDoor();
+                }
+
+                if (colCurInd > colNeighborInd)
+                {
+                    rooms[curInd].OpenLeftDoor();
+                    rooms[neighborInd].OpenRightDoor();
+                }
+
+                curInd = neighborInd;
+                rooms[curInd].Visit();
+            }
+            else if (stack.Count > 0)
+            {
+                curInd = stack.Pop();
             }
         }
 

@@ -113,14 +113,6 @@ namespace SharedLib
             GL.DeleteBuffer(_indVboId);
             GL.BindVertexArray(0);
             GL.DeleteVertexArray(_vaoId);
-
-            _vertices.Clear();
-            _normals.Clear();
-            _indices.Clear();
-            _vaoId = 0;
-            _vertVboId = 0;
-            _normVboId = 0;
-            _indVboId = 0;
         }
     }
 }

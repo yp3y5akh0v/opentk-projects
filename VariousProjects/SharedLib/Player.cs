@@ -1,7 +1,6 @@
 ﻿using OpenTK;
-using SharedLib;
 
-namespace MazeGen3D
+namespace SharedLib
 {
     public class Player
     {
@@ -14,7 +13,7 @@ namespace MazeGen3D
         {
             this.radius = radius;
 
-            camera = new Camera(1000f * Vector3.One, new Vector3(MathHelper.DegreesToRadians(90f), 0f, 0f));
+            camera = new Camera(Vector3.Zero, new Vector3(MathHelper.DegreesToRadians(90f), 0f, 0f));
             keyboard = new KeyboardInput(camera);
             mouse = new MouseInput(camera);
         }
@@ -43,6 +42,26 @@ namespace MazeGen3D
         public void SetPosition(Vector3 v)
         {
             camera.SetPosition(v);
+        }
+
+        public void SetRotation(Vector3 v)
+        {
+            camera.SetRotation(v);
+        }
+
+        public void SetRotationX(float x)
+        {
+            camera.SetRotationX(x);
+        }
+
+        public void SetRotationY(float y)
+        {
+            camera.SetRotationY(y);
+        }
+
+        public void SetRotationZ(float z)
+        {
+            camera.SetRotationZ(z);
         }
     }
 }

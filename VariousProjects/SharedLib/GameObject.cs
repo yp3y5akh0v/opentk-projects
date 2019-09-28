@@ -5,10 +5,10 @@ namespace SharedLib
 {
     public class GameObject
     {
-        private Mesh _mesh;
-        private Vector3 position;
-        private float scale;
-        private Vector3 rotation;
+        protected Mesh mesh;
+        protected Vector3 position;
+        protected float scale;
+        protected Vector3 rotation;
 
         public GameObject()
         {
@@ -39,12 +39,12 @@ namespace SharedLib
 
         public void SetMesh(Mesh mesh)
         {
-            _mesh = mesh;
+            this.mesh = mesh;
         }
 
         public Mesh GetMesh()
         {
-            return _mesh;
+            return mesh;
         }
 
         public virtual void SetWidth(float w)
@@ -54,12 +54,12 @@ namespace SharedLib
 
         public virtual void CleanUp()
         {
-            _mesh?.CleanUp();
+            mesh?.CleanUp();
         }
 
         public virtual void Render()
         {
-            _mesh?.Render();
+            mesh?.Render();
         }
 
         public virtual void SetPosition(float x, float y, float z)
