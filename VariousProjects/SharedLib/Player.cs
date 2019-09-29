@@ -39,6 +39,11 @@ namespace SharedLib
             return camera.GetPosition();
         }
 
+        public Vector3 GetRotation()
+        {
+            return camera.GetRotation();
+        }
+
         public void SetPosition(Vector3 v)
         {
             camera.SetPosition(v);

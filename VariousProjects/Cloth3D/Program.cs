@@ -17,8 +17,8 @@ namespace Cloth3D
         private readonly float zNear = 25f;
         private readonly float zFar = 1000000f;
         private readonly float fov = MathHelper.DegreesToRadians(90f);
-        private int vertRows = 60;
-        private int vertColumns = 100;
+        private int vertRows = 50;
+        private int vertColumns = 85;
         private float gap = 5f;
         private List<ClothPoint> cPoints;
         private List<ClothSpring> cSprings;
@@ -26,6 +26,10 @@ namespace Cloth3D
         private Vector3 directionalForce = new Vector3(1f, 0f, 1f);
         private int SmoothnessConstraint = 5;
         private ClothGrid clothGrid;
+        private int trForceMinX = 0;
+        private int trForceMinZ = -20;
+        private int trForceMaxX = 250;
+        private int trForceMaxZ = 250;
 
         static void Main(string[] args)
         {
@@ -110,9 +114,13 @@ namespace Cloth3D
                     var pC = cPoints.ElementAt(GetIndex(i + 1, j));
                     var pD = cPoints.ElementAt(GetIndex(i + 1, j + 1));
 
-                    var rnd = new Random().Next(0, 20);
-                    ApplyTriangleForce(pA, pB, pC, rnd * directionalForce);
-                    ApplyTriangleForce(pC, pB, pD, rnd * directionalForce);
+                    var rndX = new Random().Next(trForceMinX, trForceMaxX);
+                    var rndZ = new Random().Next(trForceMinZ, trForceMaxZ);
+                    var randForce = new Vector3(rndX * directionalForce.X, directionalForce.Y,
+                        rndZ * directionalForce.Z);
+
+                    ApplyTriangleForce(pA, pB, pC, randForce);
+                    ApplyTriangleForce(pC, pB, pD, randForce);
                 }
             }
             foreach (var cPoint in cPoints)
@@ -165,8 +173,9 @@ namespace Cloth3D
             sceneShaderProgram.CreateUniform("projectionMatrix");
 
             player = new Player(100f);
-            player.SetRotationX(MathHelper.DegreesToRadians(180f));
-            player.SetPosition( new Vector3(vertRows * gap / 2f, vertColumns * gap / 2, 150f));
+            player.SetRotationX(MathHelper.DegreesToRadians(-230f));
+            player.SetRotationY(MathHelper.DegreesToRadians(-18f));
+            player.SetPosition(new Vector3(-vertRows * gap / 4f, vertColumns * gap / 2, 450f));
 
             cPoints = new List<ClothPoint>();
             cSprings = new List<ClothSpring>();
@@ -176,7 +185,7 @@ namespace Cloth3D
                 for (var j = 0; j < vertColumns; j++)
                 {
                     var cPoint = new ClothPoint(GetIndex(i, j), j * gap, (vertRows - i - 1) * gap, 0f);
-                    cPoint.SetMass(0.1f);
+                    cPoint.SetMass(0.25f);
                     cPoints.Add(cPoint);
                 }
             }
@@ -224,13 +233,13 @@ namespace Cloth3D
 
             for (var i = 0; i < vertRows; i++)
             {
-                //cPoints.ElementAt(GetIndex(i, 0)).Lock();
+                cPoints.ElementAt(GetIndex(i, 0)).Lock();
                 //cPoints.ElementAt(GetIndex(i, vertColumns - 1)).Lock();
             }
 
             for (var j = 0; j < vertColumns; j++)
             {
-                cPoints.ElementAt(GetIndex(0, j)).Lock();
+                //cPoints.ElementAt(GetIndex(0, j)).Lock();
                 //cPoints.ElementAt(GetIndex(vertRows - 1, j)).Lock();
             }
 
