@@ -114,5 +114,12 @@ namespace SharedLib
         {
             return Transformation.GetWorldMatrix(GetPosition(), GetRotation(), GetScale());
         }
+
+        public virtual Matrix4 GetTransposeTransformation()
+        {
+            var result = GetTransformation();
+            result.Transpose();
+            return result;
+        }
     }
 }

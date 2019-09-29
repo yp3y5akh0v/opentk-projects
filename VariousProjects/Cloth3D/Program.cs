@@ -19,12 +19,13 @@ namespace Cloth3D
         private readonly float fov = MathHelper.DegreesToRadians(90f);
         private int vertRows = 60;
         private int vertColumns = 100;
-        private float gap = 1f;
+        private float gap = 5f;
         private List<ClothPoint> cPoints;
         private List<ClothSpring> cSprings;
         private Vector3 gravity = new Vector3(0f, -30f, 0f);
-        private Vector3 directionalForce = new Vector3(0f, 0f, 1f);
+        private Vector3 directionalForce = new Vector3(1f, 0f, 1f);
         private int SmoothnessConstraint = 5;
+        private ClothGrid clothGrid;
 
         static void Main(string[] args)
         {
@@ -62,15 +63,20 @@ namespace Cloth3D
             {
                 cPoint.CleanUp();
             }
+
+            clothGrid.CleanUp();
         }
 
         private void RenderGameObjects(ShaderProgram sp, string targetWorldMatrix)
         {
-            foreach (var cPoint in cPoints)
-            {
-                sp.SetUniform(targetWorldMatrix, cPoint.GetTransformation());
-                cPoint.Render();
-            }
+            //foreach (var cPoint in cPoints)
+            //{
+            //    sp.SetUniform(targetWorldMatrix, cPoint.GetTransformation());
+            //    cPoint.Render();
+            //}
+
+            sp.SetUniform(targetWorldMatrix, clothGrid.GetTransformation());
+            clothGrid.Render();
         }
 
         private void Window_RenderFrame(object sender, FrameEventArgs e)
@@ -99,17 +105,16 @@ namespace Cloth3D
             {
                 for (var j = 0; j < vertColumns - 1; j++)
                 {
-                    var pA = cPoints.ElementAt(GetFlatteredIndex(i, j));
-                    var pB = cPoints.ElementAt(GetFlatteredIndex(i, j + 1));
-                    var pC = cPoints.ElementAt(GetFlatteredIndex(i + 1, j));
-                    var pD = cPoints.ElementAt(GetFlatteredIndex(i + 1, j + 1));
+                    var pA = cPoints.ElementAt(GetIndex(i, j));
+                    var pB = cPoints.ElementAt(GetIndex(i, j + 1));
+                    var pC = cPoints.ElementAt(GetIndex(i + 1, j));
+                    var pD = cPoints.ElementAt(GetIndex(i + 1, j + 1));
 
-                    var rnd = new Random().Next(0, 50);
+                    var rnd = new Random().Next(0, 20);
                     ApplyTriangleForce(pA, pB, pC, rnd * directionalForce);
                     ApplyTriangleForce(pC, pB, pD, rnd * directionalForce);
                 }
             }
-
             foreach (var cPoint in cPoints)
             {
                 cPoint.ApplyPositionStep((float)e.Time);
@@ -122,9 +127,11 @@ namespace Cloth3D
                     cSpring.ApplyConstraint();
                 }
             }
+
+            clothGrid.Update();
         }
 
-        private int GetFlatteredIndex(int i, int j)
+        private int GetIndex(int i, int j)
         {
             return i * vertColumns + j;
         }
@@ -168,8 +175,8 @@ namespace Cloth3D
             {
                 for (var j = 0; j < vertColumns; j++)
                 {
-                    var cPoint = new ClothPoint(GetFlatteredIndex(i, j), j * gap, (vertRows - i - 1) * gap, 0f);
-                    cPoint.SetMass(0.05f);
+                    var cPoint = new ClothPoint(GetIndex(i, j), j * gap, (vertRows - i - 1) * gap, 0f);
+                    cPoint.SetMass(0.1f);
                     cPoints.Add(cPoint);
                 }
             }
@@ -178,10 +185,10 @@ namespace Cloth3D
             {
                 for (var j = 0; j < vertColumns - 1; j++)
                 {
-                    var pA = cPoints.ElementAt(GetFlatteredIndex(i, j));
-                    var pB = cPoints.ElementAt(GetFlatteredIndex(i, j + 1));
-                    var pC = cPoints.ElementAt(GetFlatteredIndex(i + 1, j));
-                    var pD = cPoints.ElementAt(GetFlatteredIndex(i + 1, j + 1));
+                    var pA = cPoints.ElementAt(GetIndex(i, j));
+                    var pB = cPoints.ElementAt(GetIndex(i, j + 1));
+                    var pC = cPoints.ElementAt(GetIndex(i + 1, j));
+                    var pD = cPoints.ElementAt(GetIndex(i + 1, j + 1));
 
                     var sAB = new ClothSpring(pA, pB);
                     var sAC = new ClothSpring(pA, pC);
@@ -197,8 +204,8 @@ namespace Cloth3D
 
             for (var i = 0; i < vertRows - 1; i++)
             {
-                var pLastA = cPoints.ElementAt(GetFlatteredIndex(i, vertColumns - 1));
-                var pLastB = cPoints.ElementAt(GetFlatteredIndex(i + 1, vertColumns - 1));
+                var pLastA = cPoints.ElementAt(GetIndex(i, vertColumns - 1));
+                var pLastB = cPoints.ElementAt(GetIndex(i + 1, vertColumns - 1));
 
                 var sLastAB = new ClothSpring(pLastA, pLastB);
 
@@ -207,8 +214,8 @@ namespace Cloth3D
 
             for (var j = 0; j < vertColumns - 1; j++)
             {
-                var pLastA = cPoints.ElementAt(GetFlatteredIndex(vertRows - 1, j));
-                var pLastB = cPoints.ElementAt(GetFlatteredIndex(vertRows - 1, j + 1));
+                var pLastA = cPoints.ElementAt(GetIndex(vertRows - 1, j));
+                var pLastB = cPoints.ElementAt(GetIndex(vertRows - 1, j + 1));
 
                 var sLastAB = new ClothSpring(pLastA, pLastB);
 
@@ -217,15 +224,17 @@ namespace Cloth3D
 
             for (var i = 0; i < vertRows; i++)
             {
-                //cPoints.ElementAt(GetFlatteredIndex(i, 0)).Lock();
-                //cPoints.ElementAt(GetFlatteredIndex(i, vertColumns - 1)).Lock();
+                //cPoints.ElementAt(GetIndex(i, 0)).Lock();
+                //cPoints.ElementAt(GetIndex(i, vertColumns - 1)).Lock();
             }
 
             for (var j = 0; j < vertColumns; j++)
             {
-                cPoints.ElementAt(GetFlatteredIndex(0, j)).Lock();
-                //cPoints.ElementAt(GetFlatteredIndex(vertRows - 1, j)).Lock();
+                cPoints.ElementAt(GetIndex(0, j)).Lock();
+                //cPoints.ElementAt(GetIndex(vertRows - 1, j)).Lock();
             }
+
+            clothGrid = new ClothGrid(cPoints, vertRows, vertColumns);
         }
     }
 }

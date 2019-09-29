@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using OpenTK;
 using OpenTK.Graphics.OpenGL;
@@ -58,14 +59,71 @@ namespace SharedLib
             _beginMode = beginMode;
         }
 
-        public BeginMode GetBeginMode()
-        {
-            return _beginMode;
-        }
-
         public Vector3 GetVertexAt(int index)
         {
             return _vertices.ElementAt(index);
+        }
+
+        public void UpdateVertexBuffer(int index, Vector3 offset)
+        {
+            UpdateBuffer(index, offset, _vertVboId);
+        }
+
+        public void UpdateNormalBuffer(int index, Vector3 offset)
+        {
+            UpdateBuffer(index, offset, _normVboId);
+        }
+
+        private void UpdateBuffer(int index, Vector3 offset, int vboId)
+        {
+            unsafe
+            {
+                GL.BindBuffer(BufferTarget.ArrayBuffer, vboId);
+                var intPtr = GL.MapBuffer(BufferTarget.ArrayBuffer, BufferAccess.ReadWrite);
+
+                if (intPtr == IntPtr.Zero) return;
+
+                var data = (float *) intPtr;
+
+                if (data == null) return;
+
+                data[3 * index] += offset.X;
+                data[3 * index + 1] += offset.Y;
+                data[3 * index + 2] += offset.Z;
+
+                GL.UnmapBuffer(BufferTarget.ArrayBuffer);
+            }
+        }
+
+        public void SetVertexBuffer(int index, Vector3 vectBuf)
+        {
+            SetBuffer(index, vectBuf, _vertVboId);
+        }
+
+        public void SetNormalBuffer(int index, Vector3 vectBuf)
+        {
+            SetBuffer(index, vectBuf, _normVboId);
+        }
+
+        private void SetBuffer(int index, Vector3 vectBuf, int vboId)
+        {
+            unsafe
+            {
+                GL.BindBuffer(BufferTarget.ArrayBuffer, vboId);
+                var intPtr = GL.MapBuffer(BufferTarget.ArrayBuffer, BufferAccess.ReadWrite);
+
+                if (intPtr == IntPtr.Zero) return;
+
+                var data = (float *)intPtr;
+
+                if (data == null) return;
+
+                data[3 * index] = vectBuf.X;
+                data[3 * index + 1] = vectBuf.Y;
+                data[3 * index + 2] = vectBuf.Z;
+
+                GL.UnmapBuffer(BufferTarget.ArrayBuffer);
+            }
         }
 
         public void Init()
@@ -75,17 +133,17 @@ namespace SharedLib
 
             _vertVboId = GL.GenBuffer();
             GL.BindBuffer(BufferTarget.ArrayBuffer, _vertVboId);
-            GL.BufferData(BufferTarget.ArrayBuffer, 3 * _vertices.Count * sizeof(float), Utils.FlattenVectors(_vertices), BufferUsageHint.StaticDraw);
+            GL.BufferData(BufferTarget.ArrayBuffer, 3 * _vertices.Count * sizeof(float), Utils.FlattenVectors(_vertices), BufferUsageHint.DynamicDraw);
             GL.VertexAttribPointer(0, 3, VertexAttribPointerType.Float, false, 3 * sizeof(float), 0);
 
             _normVboId = GL.GenBuffer();
             GL.BindBuffer(BufferTarget.ArrayBuffer, _normVboId);
-            GL.BufferData(BufferTarget.ArrayBuffer, 3 * _normals.Count * sizeof(float), Utils.FlattenVectors(_normals), BufferUsageHint.StaticDraw);
+            GL.BufferData(BufferTarget.ArrayBuffer, 3 * _normals.Count * sizeof(float), Utils.FlattenVectors(_normals), BufferUsageHint.DynamicDraw);
             GL.VertexAttribPointer(1, 3, VertexAttribPointerType.Float, false, 3 * sizeof(float), 0);
 
             _indVboId = GL.GenBuffer();
             GL.BindBuffer(BufferTarget.ElementArrayBuffer, _indVboId);
-            GL.BufferData(BufferTarget.ElementArrayBuffer, _indices.Count * sizeof(int), _indices.ToArray(), BufferUsageHint.StaticDraw);
+            GL.BufferData(BufferTarget.ElementArrayBuffer, _indices.Count * sizeof(int), _indices.ToArray(), BufferUsageHint.DynamicDraw);
 
             GL.BindBuffer(BufferTarget.ArrayBuffer, 0);
             GL.BindVertexArray(0);

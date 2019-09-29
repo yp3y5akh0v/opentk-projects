@@ -68,6 +68,11 @@ namespace Cloth3D
             this.Acceleration = Acceleration;
         }
 
+        public void UpdateAcceleration(Vector3 Acceleration)
+        {
+            this.Acceleration += Acceleration;
+        }
+
         public Vector3 GetAcceleration()
         {
             return Acceleration;
@@ -75,7 +80,7 @@ namespace Cloth3D
 
         public void ApplyForce(Vector3 Force)
         {
-            SetAcceleration(Force / Mass);
+            UpdateAcceleration(Force / Mass);
         }
 
         public void SetPrevPosition(Vector3 v)
