@@ -11,17 +11,20 @@ namespace SharedLib
         private int _vaoId { get; set; }
         private int _vertVboId { get; set; }
         private int _normVboId { get; set; }
+        private int _texVboId { get; set; }
         private int _indVboId { get; set; }
         private BeginMode _beginMode { get; set; }
         private List<Vector3> _vertices { get; set; }
-        private List<int> _indices { get; set; }
         private List<Vector3> _normals { get; set; }
+        private List<Vector2> _texCoords { get; set; }
+        private List<int> _indices { get; set; }
 
         public Mesh()
         {
             _vertices = new List<Vector3>();
             _indices = new List<int>();
             _normals = new List<Vector3>();
+            _texCoords = new List<Vector2>();
         }
 
         public int AddVertex(Vector3 v)
@@ -33,6 +36,12 @@ namespace SharedLib
         public void AddNormal(Vector3 n)
         {
             _normals.Add(n);
+        }
+
+        public int AddTexCoord(Vector2 v)
+        {
+            _texCoords.Add(v);
+            return _texCoords.Count - 1;
         }
 
         public void AddIndex(int ind)
@@ -74,6 +83,11 @@ namespace SharedLib
             UpdateBuffer(index, offset, _normVboId);
         }
 
+        public void UpdateTexBuffer(int index, Vector2 offset)
+        {
+            UpdateBuffer(index, offset, _texVboId);
+        }
+
         private void UpdateBuffer(int index, Vector3 offset, int vboId)
         {
             unsafe
@@ -95,6 +109,26 @@ namespace SharedLib
             }
         }
 
+        private void UpdateBuffer(int index, Vector2 offset, int vboId)
+        {
+            unsafe
+            {
+                GL.BindBuffer(BufferTarget.ArrayBuffer, vboId);
+                var intPtr = GL.MapBuffer(BufferTarget.ArrayBuffer, BufferAccess.ReadWrite);
+
+                if (intPtr == IntPtr.Zero) return;
+
+                var data = (float*)intPtr;
+
+                if (data == null) return;
+
+                data[2 * index] += offset.X;
+                data[2 * index + 1] += offset.Y;
+
+                GL.UnmapBuffer(BufferTarget.ArrayBuffer);
+            }
+        }
+
         public void SetVertexBuffer(int index, Vector3 vectBuf)
         {
             SetBuffer(index, vectBuf, _vertVboId);
@@ -103,6 +137,11 @@ namespace SharedLib
         public void SetNormalBuffer(int index, Vector3 vectBuf)
         {
             SetBuffer(index, vectBuf, _normVboId);
+        }
+
+        public void SetTexBuffer(int index, Vector2 texBuf)
+        {
+            SetBuffer(index, texBuf, _texVboId);
         }
 
         private void SetBuffer(int index, Vector3 vectBuf, int vboId)
@@ -126,6 +165,26 @@ namespace SharedLib
             }
         }
 
+        private void SetBuffer(int index, Vector2 vectBuf, int vboId)
+        {
+            unsafe
+            {
+                GL.BindBuffer(BufferTarget.ArrayBuffer, vboId);
+                var intPtr = GL.MapBuffer(BufferTarget.ArrayBuffer, BufferAccess.ReadWrite);
+
+                if (intPtr == IntPtr.Zero) return;
+
+                var data = (float*)intPtr;
+
+                if (data == null) return;
+
+                data[2 * index] = vectBuf.X;
+                data[2 * index + 1] = vectBuf.Y;
+
+                GL.UnmapBuffer(BufferTarget.ArrayBuffer);
+            }
+        }
+
         public void Init()
         {
             _vaoId = GL.GenVertexArray();
@@ -141,6 +200,11 @@ namespace SharedLib
             GL.BufferData(BufferTarget.ArrayBuffer, 3 * _normals.Count * sizeof(float), Utils.FlattenVectors(_normals), BufferUsageHint.DynamicDraw);
             GL.VertexAttribPointer(1, 3, VertexAttribPointerType.Float, false, 3 * sizeof(float), 0);
 
+            _texVboId = GL.GenBuffer();
+            GL.BindBuffer(BufferTarget.ArrayBuffer, _texVboId);
+            GL.BufferData(BufferTarget.ArrayBuffer, 2 * _texCoords.Count * sizeof(float), Utils.FlattenVectors(_texCoords), BufferUsageHint.DynamicDraw);
+            GL.VertexAttribPointer(2, 2, VertexAttribPointerType.Float, true, 2 * sizeof(float), 0);
+
             _indVboId = GL.GenBuffer();
             GL.BindBuffer(BufferTarget.ElementArrayBuffer, _indVboId);
             GL.BufferData(BufferTarget.ElementArrayBuffer, _indices.Count * sizeof(int), _indices.ToArray(), BufferUsageHint.DynamicDraw);
@@ -154,19 +218,23 @@ namespace SharedLib
             GL.BindVertexArray(_vaoId);
             GL.EnableVertexAttribArray(0);
             GL.EnableVertexAttribArray(1);
+            GL.EnableVertexAttribArray(2);
             GL.DrawElements(_beginMode, _indices.Count, DrawElementsType.UnsignedInt, 0);
             GL.DisableVertexAttribArray(0);
             GL.DisableVertexAttribArray(1);
+            GL.DisableVertexAttribArray(2);
             GL.BindVertexArray(0);
         }
 
         public void CleanUp()
         {
             GL.DisableVertexAttribArray(0);
-            GL.DisableVertexAttribArray(1);            
+            GL.DisableVertexAttribArray(1);
+            GL.DisableVertexAttribArray(2);
             GL.BindBuffer(BufferTarget.ArrayBuffer, 0);
             GL.DeleteBuffer(_vertVboId);
             GL.DeleteBuffer(_normVboId);
+            GL.DeleteBuffer(_texVboId);
             GL.BindBuffer(BufferTarget.ElementArrayBuffer, 0);
             GL.DeleteBuffer(_indVboId);
             GL.BindVertexArray(0);

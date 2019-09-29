@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 using OpenTK;
 using OpenTK.Graphics.OpenGL;
 using SharedLib;
@@ -11,24 +10,35 @@ namespace Cloth3D
         private List<ClothPoint> ClothPoints { get; set; }
         private int Rows { get; set; }
         private int Cols { get; set; }
+        private Texture texture { get; set; }
 
-        public ClothGrid(List<ClothPoint> clothPoints, int rows, int cols)
+        public ClothGrid(List<ClothPoint> clothPoints, int rows, int cols, string filePath)
         {
             ClothPoints = clothPoints;
             Rows = rows;
             Cols = cols;
+            texture = new Texture(filePath, TextureTarget.Texture2D);
 
             var mesh = new Mesh();
-            GL.PolygonMode(MaterialFace.FrontAndBack, PolygonMode.Line);
             mesh.SetBeginMode(BeginMode.TriangleStrip);
 
-            foreach (var clothPoint in clothPoints)
+            foreach (var clothPoint in ClothPoints)
             {
                 mesh.AddVertex(clothPoint.GetPosition());
                 mesh.AddNormal(Vector3.Zero);
             }
 
-            for (var i = 0; i < rows - 1; i++)
+            for (var i = 0; i < Rows; i++)
+            {
+                for (var j = 0; j < Cols; j++)
+                {
+                    var texV = Utils.Map(i, 0f, Rows - 1, 0f, 1f);
+                    var texU = Utils.Map(j, 0f, Cols - 1, 0f, 1f);
+                    mesh.AddTexCoord(new Vector2(texU, texV));
+                }
+            }
+
+            for (var i = 0; i < Rows - 1; i++)
             {
                 var step = 1;
                 var j = 0;
@@ -36,10 +46,10 @@ namespace Cloth3D
                 if (i % 2 == 1)
                 {
                     step = -1;
-                    j = cols - 1;
+                    j = Cols - 1;
                 }
 
-                while (j > -1 && j < cols)
+                while (j > -1 && j < Cols)
                 {
                     var indA = GetIndex(i, j);
                     var indB = GetIndex(i + 1, j);
@@ -60,6 +70,23 @@ namespace Cloth3D
             {
                 mesh.SetVertexBuffer(clothPoint.GetId(), clothPoint.GetPosition());
             }
+        }
+
+        public override void CleanUp()
+        {
+            base.CleanUp();
+            texture.CleanUp();
+        }
+
+        public void BindTexture(TextureUnit texUnit)
+        {
+            GL.ActiveTexture(texUnit);
+            texture.Bind();
+        }
+
+        public void UnBindTexture()
+        {
+            texture.UnBind();
         }
 
         private int GetIndex(int i, int j)

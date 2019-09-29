@@ -1,4 +1,5 @@
-﻿using OpenTK.Graphics.OpenGL;
+﻿using System;
+using OpenTK.Graphics.OpenGL;
 
 namespace SharedLib
 {
@@ -17,10 +18,9 @@ namespace SharedLib
             Bind();
             texture = new Texture(width, height, TextureTarget.Texture2D);
             texture.Bind();
+            texture.Alloc(PixelInternalFormat.DepthComponent, PixelFormat.DepthComponent, PixelType.Float, IntPtr.Zero);
             texture.SetupFilters(TextureMinFilter.Nearest, TextureMagFilter.Nearest);
             texture.SetupWraps(TextureWrapMode.ClampToEdge, TextureWrapMode.ClampToEdge);
-            texture.Alloc(PixelInternalFormat.DepthComponent, PixelFormat.DepthComponent, PixelType.Float);
-
             GL.FramebufferTexture2D(FramebufferTarget.Framebuffer, FramebufferAttachment.DepthAttachment, texture.GetTextureTarget(), texture.GetId(), 0);
 
             GL.ReadBuffer(ReadBufferMode.None);

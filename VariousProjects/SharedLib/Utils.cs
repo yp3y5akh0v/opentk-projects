@@ -34,6 +34,19 @@ namespace SharedLib
             return lookAt.Normalized();
         }
 
+        public static float[] FlattenVectors(List<Vector2> list)
+        {
+            var result = new float[2 * list.Count];
+            for (var i = 0; i < list.Count; i++)
+            {
+                var e = list.ElementAt(i);
+                result[2 * i] = e.X;
+                result[2 * i + 1] = e.Y;
+            }
+
+            return result;
+        }
+
         public static float[] FlattenVectors(List<Vector3> list)
         {
             var result = new float[3 * list.Count];
@@ -56,6 +69,11 @@ namespace SharedLib
         public static Vector3 SafeNormalized(Vector3 v)
         {
             return v.Length > 0 ? v.Normalized() : v;
+        }
+
+        public static float Map(float value, float fromSource, float toSource, float fromTarget, float toTarget)
+        {
+            return (value - fromSource) / (toSource - fromSource) * (toTarget - fromTarget) + fromTarget;
         }
     }
 }

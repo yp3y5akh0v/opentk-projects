@@ -1,5 +1,9 @@
 ﻿using System;
+using System.Drawing;
+using System.Drawing.Imaging;
+using System.IO;
 using OpenTK.Graphics.OpenGL;
+using PixelFormat = OpenTK.Graphics.OpenGL.PixelFormat;
 
 namespace SharedLib
 {
@@ -10,6 +14,33 @@ namespace SharedLib
         private readonly int height;
         private readonly TextureTarget textureTarget;
 
+        public Texture(string filePath, TextureTarget textureTarget)
+        {
+            if (!File.Exists(filePath))
+            {
+                throw new FileNotFoundException("Texture load failed, please specify the correct file path", filePath);
+            }
+
+            id = GL.GenTexture();
+            this.textureTarget = textureTarget;
+
+            Bind();
+            var bmp = new Bitmap(filePath);
+
+            width = bmp.Width;
+            height = bmp.Height;
+
+            var bmpData = bmp.LockBits(new Rectangle(0, 0, bmp.Width, bmp.Height), ImageLockMode.ReadOnly,
+                System.Drawing.Imaging.PixelFormat.Format32bppArgb);
+
+            Alloc(PixelInternalFormat.Rgba, PixelFormat.Bgra, PixelType.UnsignedByte, bmpData.Scan0);
+            SetupFilters(TextureMinFilter.Linear, TextureMagFilter.Linear);
+            SetupWraps(TextureWrapMode.Clamp, TextureWrapMode.Clamp);
+
+            bmp.UnlockBits(bmpData);
+            UnBind();
+        }
+
         public Texture(int width, int height, TextureTarget textureTarget)
         {
             id = GL.GenTexture();
@@ -18,9 +49,9 @@ namespace SharedLib
             this.textureTarget = textureTarget;
         }
 
-        public void Alloc(PixelInternalFormat internalFormat, PixelFormat format, PixelType type)
+        public void Alloc(PixelInternalFormat internalFormat, PixelFormat format, PixelType type, IntPtr data)
         {
-            GL.TexImage2D(textureTarget, 0, internalFormat, width, height, 0, format, type, IntPtr.Zero);
+            GL.TexImage2D(textureTarget, 0, internalFormat, width, height, 0, format, type, data);
         }
 
         public void SetupWraps(TextureWrapMode wrapSMode, TextureWrapMode wrapTMode)

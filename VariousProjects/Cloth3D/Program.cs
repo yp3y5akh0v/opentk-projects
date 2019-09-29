@@ -22,14 +22,14 @@ namespace Cloth3D
         private float gap = 5f;
         private List<ClothPoint> cPoints;
         private List<ClothSpring> cSprings;
-        private Vector3 gravity = new Vector3(0f, -30f, 0f);
+        private Vector3 gravity = new Vector3(0f, -50f, 0f);
         private Vector3 directionalForce = new Vector3(1f, 0f, 1f);
-        private int SmoothnessConstraint = 5;
+        private int SmoothnessConstraint = 6;
         private ClothGrid clothGrid;
         private int trForceMinX = 0;
-        private int trForceMinZ = -20;
+        private int trForceMinZ = -40;
         private int trForceMaxX = 250;
-        private int trForceMaxZ = 250;
+        private int trForceMaxZ = 40;
 
         static void Main(string[] args)
         {
@@ -57,6 +57,7 @@ namespace Cloth3D
             var camera = player.GetCamera();
             sceneShaderProgram.SetUniform("viewMatrix",
                 Transformation.GetViewMatrix(camera.GetPosition(), Utils.GetLookAt(camera.GetRotation())));
+            sceneShaderProgram.SetUniform("texSampler", 0);
         }
 
         private void Window_Unload(object sender, EventArgs e)
@@ -88,8 +89,10 @@ namespace Cloth3D
             GL.Viewport(0, 0, window.Width, window.Height);
             GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
             sceneShaderProgram.Bind();
+            clothGrid.BindTexture(TextureUnit.Texture0);
             ConfigureSceneShader();
             RenderGameObjects(sceneShaderProgram, "worldMatrix");
+            clothGrid.UnBindTexture();
             sceneShaderProgram.Unbind();
 
             GL.Flush();
@@ -163,6 +166,7 @@ namespace Cloth3D
         {
             GL.ClearColor(Color.FromArgb(0, 0, 0, 0));
             GL.Enable(EnableCap.DepthTest);
+            GL.Enable(EnableCap.Texture2D);
 
             sceneShaderProgram = new ShaderProgram();
             sceneShaderProgram.CreateVertexShader(Utils.LoadShaderCode("vertex.glsl"));
@@ -171,6 +175,7 @@ namespace Cloth3D
             sceneShaderProgram.CreateUniform("viewMatrix");
             sceneShaderProgram.CreateUniform("worldMatrix");
             sceneShaderProgram.CreateUniform("projectionMatrix");
+            sceneShaderProgram.CreateUniform("texSampler");
 
             player = new Player(100f);
             player.SetRotationX(MathHelper.DegreesToRadians(-230f));
@@ -185,7 +190,7 @@ namespace Cloth3D
                 for (var j = 0; j < vertColumns; j++)
                 {
                     var cPoint = new ClothPoint(GetIndex(i, j), j * gap, (vertRows - i - 1) * gap, 0f);
-                    cPoint.SetMass(0.25f);
+                    cPoint.SetMass(0.35f);
                     cPoints.Add(cPoint);
                 }
             }
@@ -243,7 +248,7 @@ namespace Cloth3D
                 //cPoints.ElementAt(GetIndex(vertRows - 1, j)).Lock();
             }
 
-            clothGrid = new ClothGrid(cPoints, vertRows, vertColumns);
+            clothGrid = new ClothGrid(cPoints, vertRows, vertColumns, "Resources/USA.png");
         }
     }
 }
