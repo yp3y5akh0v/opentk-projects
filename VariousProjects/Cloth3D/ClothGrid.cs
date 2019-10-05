@@ -10,14 +10,12 @@ namespace Cloth3D
         private List<ClothPoint> ClothPoints { get; set; }
         private int Rows { get; set; }
         private int Cols { get; set; }
-        private Texture texture { get; set; }
 
         public ClothGrid(List<ClothPoint> clothPoints, int rows, int cols, string filePath)
         {
             ClothPoints = clothPoints;
             Rows = rows;
             Cols = cols;
-            texture = new Texture(filePath, TextureTarget.Texture2D);
 
             var mesh = new Mesh();
             mesh.SetBeginMode(BeginMode.TriangleStrip);
@@ -60,6 +58,8 @@ namespace Cloth3D
                 }
             }
 
+            mesh.SetTexture(new Texture(filePath, TextureTarget.Texture2D));
+
             mesh.Init();
             SetMesh(mesh);
         }
@@ -72,21 +72,14 @@ namespace Cloth3D
             }
         }
 
-        public override void CleanUp()
-        {
-            base.CleanUp();
-            texture.CleanUp();
-        }
-
         public void BindTexture(TextureUnit texUnit)
         {
-            GL.ActiveTexture(texUnit);
-            texture.Bind();
+            mesh.BindTexture(texUnit);
         }
 
         public void UnBindTexture()
         {
-            texture.UnBind();
+            mesh.UnBindTexture();
         }
 
         private int GetIndex(int i, int j)

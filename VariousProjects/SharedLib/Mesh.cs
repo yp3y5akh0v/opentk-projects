@@ -18,6 +18,7 @@ namespace SharedLib
         private List<Vector3> _normals { get; set; }
         private List<Vector2> _texCoords { get; set; }
         private List<int> _indices { get; set; }
+        private Texture _texture { get; set; }
 
         public Mesh()
         {
@@ -185,6 +186,11 @@ namespace SharedLib
             }
         }
 
+        public void SetTexture(Texture texture)
+        {
+            _texture = texture;
+        }
+
         public void Init()
         {
             _vaoId = GL.GenVertexArray();
@@ -213,6 +219,17 @@ namespace SharedLib
             GL.BindVertexArray(0);
         }
 
+        public void BindTexture(TextureUnit textureUnit)
+        {
+            GL.ActiveTexture(textureUnit);
+            _texture?.Bind();
+        }
+
+        public void UnBindTexture()
+        {
+            _texture?.UnBind();
+        }
+
         public void Render()
         {
             GL.BindVertexArray(_vaoId);
@@ -228,6 +245,8 @@ namespace SharedLib
 
         public void CleanUp()
         {
+            _texture?.CleanUp();
+
             GL.DisableVertexAttribArray(0);
             GL.DisableVertexAttribArray(1);
             GL.DisableVertexAttribArray(2);
