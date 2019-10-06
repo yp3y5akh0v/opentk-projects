@@ -82,6 +82,11 @@ namespace Cloth3D
             mesh.UnBindTexture();
         }
 
+        public IEnumerable<ClothPoint> GetClothPoints()
+        {
+            return ClothPoints;
+        }
+
         private int GetIndex(int i, int j)
         {
             return i * Cols + j;

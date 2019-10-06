@@ -10,6 +10,7 @@ namespace Cloth3D
         protected float Mass { get; set; }
         protected Vector3 Acceleration { get; set; }
         protected Vector3 prevPosition { get; set; }
+        protected float ColliderRadius { get; set; }
 
         public ClothPoint(int Id): this(Id, Vector3.Zero)
         {
@@ -26,6 +27,16 @@ namespace Cloth3D
 
         public ClothPoint(int Id, Vector3 v): this(Id, v.X, v.Y, v.Z)
         {
+        }
+
+        public void SetColliderRadius(float ColliderRadius)
+        {
+            this.ColliderRadius = ColliderRadius;
+        }
+
+        public float GetColliderRadius()
+        {
+            return ColliderRadius;
         }
 
         public void SetId(int Id)

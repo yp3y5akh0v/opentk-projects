@@ -190,6 +190,7 @@ namespace Cloth3D
                 for (var j = 0; j < vertColumns; j++)
                 {
                     var cPoint = new ClothPoint(GetIndex(i, j), j * gap, (vertRows - i - 1) * gap, 0f);
+                    cPoint.SetColliderRadius(gap / 2);
                     cPoint.SetMass(0.35f);
                     cPoints.Add(cPoint);
                 }
