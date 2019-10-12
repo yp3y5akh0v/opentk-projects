@@ -7,13 +7,15 @@ namespace SharedLib
     public class Quad : GameObject
     {
         private Vector3 normal;
+        private Vector4 color;
         private Vector3 offset;
         private float width;
         private float height;
 
-        public Quad(Vector3 offset, float width, float height, Vector3 normal)
+        public Quad(Vector3 offset, float width, float height, Vector3 normal, Vector4 color)
         {
             this.normal = normal;
+            this.color = color;
             this.offset = offset;
             this.width = width;
             this.height = height;
@@ -28,7 +30,12 @@ namespace SharedLib
 
             for (var i = 0; i < 4; i++)
             {
-                mesh.AddNormal(new Vector3(normal.X, normal.Y, normal.Z));
+                mesh.AddNormal(normal);
+            }
+
+            for (var i = 0; i < 4; i++)
+            {
+                mesh.AddColor(color);
             }
 
             mesh.AddTripleIndices(0, 1, 2);

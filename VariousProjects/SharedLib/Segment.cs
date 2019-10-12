@@ -8,12 +8,14 @@ namespace SharedLib
         protected Vector3 _beginPoint { get; set; }
         protected Vector3 _endPoint { get; set; }
         protected Vector3 _normal { get; set; }
+        protected Vector4 _color { get; set; }
 
-        public Segment(Vector3 beginPoint, Vector3 endPoint, Vector3 normal)
+        public Segment(Vector3 beginPoint, Vector3 endPoint, Vector3 normal, Vector4 color)
         {
             _beginPoint = beginPoint;
             _endPoint = endPoint;
             _normal = normal;
+            _color = color;
 
             var mesh = new Mesh();
             mesh.SetBeginMode(BeginMode.Lines);
@@ -23,6 +25,9 @@ namespace SharedLib
 
             mesh.AddNormal(normal);
             mesh.AddNormal(normal);
+
+            mesh.AddColor(color);
+            mesh.AddColor(color);
 
             mesh.AddIndex(0);
             mesh.AddIndex(1);

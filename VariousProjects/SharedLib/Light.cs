@@ -66,7 +66,7 @@ namespace SharedLib
         public void InitiateBeam(float w)
         {
             var startPos = GetRadius() * GetDirection();
-            beam = new Segment(startPos, startPos + w * GetDirection(), Vector3.UnitY);
+            beam = new Segment(startPos, startPos + w * GetDirection(), Vector3.UnitY, Vector4.One);
         }
     }
 }

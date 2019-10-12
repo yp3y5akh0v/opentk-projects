@@ -16,12 +16,12 @@ namespace MazeGen2D
             segments = new Segment[4];
             visited = false;
 
-            segments[0] = new Segment(new Vector3(x, y, z), new Vector3(x + w, y, z), Vector3.One);
-            segments[1] = new Segment(new Vector3(x, y, z), new Vector3(x, y + h, z), Vector3.One);
-            segments[2] = new Segment(new Vector3(x, y + h, z), new Vector3(x + w, y + h, z), Vector3.One);
-            segments[3] = new Segment(new Vector3(x + w, y, z), new Vector3(x + w, y + h, z), Vector3.One);
+            segments[0] = new Segment(new Vector3(x, y, z), new Vector3(x + w, y, z), Vector3.One, Vector4.One);
+            segments[1] = new Segment(new Vector3(x, y, z), new Vector3(x, y + h, z), Vector3.One, Vector4.One);
+            segments[2] = new Segment(new Vector3(x, y + h, z), new Vector3(x + w, y + h, z), Vector3.One, Vector4.One);
+            segments[3] = new Segment(new Vector3(x + w, y, z), new Vector3(x + w, y + h, z), Vector3.One, Vector4.One);
 
-            shield = new Quad(new Vector3(x, y, z), w, h, Vector3.Zero);            
+            shield = new Quad(new Vector3(x, y, z), w, h, Vector3.Zero, Vector4.One);            
         }
 
         public void OpenTopDoor()

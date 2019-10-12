@@ -17,7 +17,7 @@ namespace MazeGen3D
 
             for (var i = 0; i < walls.Length; i++)
             {
-                walls[i] = new Quad(offset, w, h, Vector3.UnitZ);
+                walls[i] = new Quad(offset, w, h, Vector3.UnitZ, Vector4.One);
             }
 
             walls[0].SetRotation(0f, MathHelper.DegreesToRadians(-180f), 0f);

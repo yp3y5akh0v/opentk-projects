@@ -47,6 +47,21 @@ namespace SharedLib
             return result;
         }
 
+        public static float[] FlattenVectors(List<Vector4> list)
+        {
+            var result = new float[4 * list.Count];
+            for (var i = 0; i < list.Count; i++)
+            {
+                var e = list.ElementAt(i);
+                result[4 * i] = e.X;
+                result[4 * i + 1] = e.Y;
+                result[4 * i + 2] = e.Z;
+                result[4 * i + 3] = e.W;
+            }
+
+            return result;
+        }
+
         public static float[] FlattenVectors(List<Vector3> list)
         {
             var result = new float[3 * list.Count];

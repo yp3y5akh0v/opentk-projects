@@ -114,12 +114,13 @@ namespace MazeGen2D
                 var worldMatrix = Transformation.GetWorldMatrix(rooms[i].GetPosition(), rooms[i].GetRotation(), rooms[i].GetScale());
                 shaderProgram.SetUniform("worldMatrix", worldMatrix);
 
-                var maskColor = new Vector3(1f, 1f, 1f);
+                var maskColor = Vector4.One;
                 if (i == curInd)
                 {
                     maskColor.X = 1.0f / 0.2f;
-                    maskColor.Y = 0;
-                    maskColor.Z = 0;
+                    maskColor.Y = 0f;
+                    maskColor.Z = 0f;
+                    maskColor.W = 1f;
                 }
                 shaderProgram.SetUniform("maskColor", maskColor);
 

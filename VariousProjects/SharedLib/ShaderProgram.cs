@@ -67,6 +67,11 @@ namespace SharedLib
             GL.Uniform3(uniforms[uniformName], value);
         }
 
+        public void SetUniform(string uniformName, Vector4 value)
+        {
+            GL.Uniform4(uniforms[uniformName], value);
+        }
+
         public void SetUniform(string uniformName, float value)
         {
             GL.Uniform1(uniforms[uniformName], value);
