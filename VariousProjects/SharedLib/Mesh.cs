@@ -85,16 +85,19 @@ namespace SharedLib
 
         public void UpdateVertexBuffer(int index, Vector3 offset)
         {
+            _vertices[index] += offset;
             UpdateBuffer(index, offset, _vertVboId);
         }
 
         public void UpdateNormalBuffer(int index, Vector3 offset)
         {
+            _normals[index] += offset;
             UpdateBuffer(index, offset, _normVboId);
         }
 
         public void UpdateTexBuffer(int index, Vector2 offset)
         {
+            _texCoords[index] += offset;
             UpdateBuffer(index, offset, _texVboId);
         }
 
@@ -141,21 +144,25 @@ namespace SharedLib
 
         public void SetVertexBuffer(int index, Vector3 vectBuf)
         {
+            _vertices[index] = vectBuf;
             SetBuffer(index, vectBuf, _vertVboId);
         }
 
         public void SetNormalBuffer(int index, Vector3 vectBuf)
         {
+            _normals[index] = vectBuf;
             SetBuffer(index, vectBuf, _normVboId);
         }
 
         public void SetTexBuffer(int index, Vector2 texBuf)
         {
+            _texCoords[index] = texBuf;
             SetBuffer(index, texBuf, _texVboId);
         }
 
         public void SetColorBuffer(int index, Vector4 colorBuf)
         {
+            _colors[index] = colorBuf;
             SetBuffer(index, colorBuf, _colorVboId);
         }
 

@@ -48,6 +48,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Camera.cs" />
+    <Compile Include="Circle2D.cs" />
     <Compile Include="Constants.cs" />
     <Compile Include="GameObject.cs" />
     <Compile Include="IcoSphere.cs" />
