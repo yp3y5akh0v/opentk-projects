@@ -206,7 +206,7 @@ namespace MazeGen3D
             var lightViewMatrix = Transformation.GetViewMatrix(light.GetPosition(), light.GetDirection());
             var maxLightWidthProj = Math.Max(nrRooms * (rmWidth + gap), ncRooms * (rmWidth + gap));
             var maxLightHeightProj = rmHeight * 10000f;
-            var lightProjectionMatrix = Transformation.GetOrthoProjectionMatrix(maxLightWidthProj, maxLightHeightProj, zNear, zFar);
+            var lightProjectionMatrix = Transformation.GetOrthoProjectionMatrix(maxLightWidthProj, maxLightHeightProj, zNear, zFar, true);
 
             depthShaderProgram.Bind();
             depthFbo.Bind();

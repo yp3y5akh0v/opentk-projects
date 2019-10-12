@@ -12,8 +12,8 @@ namespace Collision2DPerformance
     {
         private GameWindow window;
         private ShaderProgram shaderProgram;
-        private readonly float zNear = 0.01f;
-        private readonly float zFar = 1000f;
+        private readonly float zNear = 0f;
+        private readonly float zFar = 1f;
 
         static void Main(string[] args)
         {
@@ -22,7 +22,7 @@ namespace Collision2DPerformance
 
         public void Start()
         {
-            window = new GameWindow(800, 800, GraphicsMode.Default, "Collision2D Performance");
+            window = new GameWindow(800, 800, GraphicsMode.Default, "Collision 2D Performance");
 
             window.Load += Window_Load;
             window.UpdateFrame += Window_UpdateFrame;
@@ -42,12 +42,12 @@ namespace Collision2DPerformance
 
         private void Window_RenderFrame(object sender, FrameEventArgs e)
         {
-            GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
+            GL.Clear(ClearBufferMask.ColorBufferBit);
             GL.Viewport(0, 0, window.Width, window.Height);
 
             shaderProgram.Bind();
 
-            var projectionMatrix = Transformation.GetOrthoProjectionMatrix(window.Width, window.Height, zNear, zFar);
+            var projectionMatrix = Transformation.GetOrthoProjectionMatrix(window.Width, window.Height, zNear, zFar, false);
             shaderProgram.SetUniform("projectionMatrix", projectionMatrix);
 
             var worldMatrix = Matrix4.Identity;

@@ -18,10 +18,10 @@ namespace SharedLib
             return Matrix4.CreatePerspectiveFieldOfView(fov, width / height, zNear, zFar);
         }
 
-        public static Matrix4 GetOrthoProjectionMatrix(float width, float height, float zNear, float zFar)
+        public static Matrix4 GetOrthoProjectionMatrix(float width, float height, float zNear, float zFar, bool flipY)
         {
             var result = Matrix4.Identity;
-            result[1, 1] = -1;
+            result[1, 1] = flipY ? -1 : 1;
             result = Matrix4.Mult(Matrix4.CreateOrthographicOffCenter(0, width, 0, height, zNear, zFar), result);
             return result;
         }

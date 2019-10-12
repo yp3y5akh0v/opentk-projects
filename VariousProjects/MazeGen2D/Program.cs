@@ -106,7 +106,7 @@ namespace MazeGen2D
 
             shaderProgram.Bind();
 
-            var projectionMatrix = Transformation.GetOrthoProjectionMatrix(window.Width, window.Height, zNear, zFar);
+            var projectionMatrix = Transformation.GetOrthoProjectionMatrix(window.Width, window.Height, zNear, zFar, true);
             shaderProgram.SetUniform("projectionMatrix", projectionMatrix);
 
             for (var i = 0; i < rooms.Length; i++)
