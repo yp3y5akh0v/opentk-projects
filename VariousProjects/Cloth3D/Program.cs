@@ -74,12 +74,6 @@ namespace Cloth3D
 
         private void RenderGameObjects(ShaderProgram sp, string targetWorldMatrix)
         {
-            //foreach (var cPoint in cPoints)
-            //{
-            //    sp.SetUniform(targetWorldMatrix, cPoint.GetTransformation());
-            //    cPoint.Render();
-            //}
-
             sp.SetUniform(targetWorldMatrix, clothGrid.GetTransformation());
             clothGrid.Render();
         }

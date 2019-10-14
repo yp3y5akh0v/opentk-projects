@@ -24,6 +24,7 @@ namespace Cloth3D
             {
                 mesh.AddVertex(clothPoint.GetPosition());
                 mesh.AddNormal(Vector3.Zero);
+                mesh.AddColor(Vector4.One);
             }
 
             for (var i = 0; i < Rows; i++)

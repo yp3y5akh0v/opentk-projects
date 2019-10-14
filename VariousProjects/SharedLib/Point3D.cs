@@ -28,6 +28,7 @@ namespace SharedLib
             mesh.AddVertex(position0);
             mesh.AddNormal(Vector3.UnitZ);
             mesh.AddColor(color);
+            mesh.AddTexCoord(Vector2.Zero);
             mesh.AddIndex(0);
             mesh.Init();
             SetMesh(mesh);
