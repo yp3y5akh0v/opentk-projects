@@ -97,7 +97,7 @@ namespace Collision2DPerformance
                 circle.Render();
             }
 
-            quadtree.Render(shaderProgram);
+            quadtree.Render("worldMatrix", shaderProgram);
 
             shaderProgram.Unbind();
 

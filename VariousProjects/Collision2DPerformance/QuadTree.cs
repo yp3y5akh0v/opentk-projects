@@ -1,8 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using OpenTK;
+using SharedLib;
 
-namespace SharedLib
+namespace Collision2DPerformance
 {
     public class QuadTree
     {
@@ -193,14 +194,14 @@ namespace SharedLib
             return result;
         }
 
-        public void Render(ShaderProgram sp)
+        public void Render(string targetWorldMatrix, ShaderProgram sp)
         {
-            sp.SetUniform("worldMatrix", range.GetTransformation());
+            sp.SetUniform(targetWorldMatrix, range.GetTransformation());
             range.Render();
 
             foreach (var item in childs.Values)
             {
-                item.Render(sp);
+                item.Render(targetWorldMatrix, sp);
             }
         }
     }
