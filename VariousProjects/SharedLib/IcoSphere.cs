@@ -66,9 +66,9 @@ namespace SharedLib
                 var faces2 = new List<Tuple<int, int, int>>();
                 foreach (var face in faces)
                 {
-                    int a = GetMiddlePoint(mesh, face.Item1, face.Item2);
-                    int b = GetMiddlePoint(mesh, face.Item2, face.Item3);
-                    int c = GetMiddlePoint(mesh, face.Item3, face.Item1);
+                    var a = GetMiddlePoint(mesh, face.Item1, face.Item2);
+                    var b = GetMiddlePoint(mesh, face.Item2, face.Item3);
+                    var c = GetMiddlePoint(mesh, face.Item3, face.Item1);
 
                     faces2.Add(Tuple.Create(face.Item1, a, c));
                     faces2.Add(Tuple.Create(face.Item2, b, a));
@@ -81,13 +81,13 @@ namespace SharedLib
 
             foreach (var face in faces)
             {
-                var a = face.Item1;
-                var b = face.Item2;
-                var c = face.Item3;
-                var n = Utils.SafeNormalized(GetFaceNormal(mesh, a, b, c));
+                mesh.AddTripleIndices(face.Item1, face.Item2, face.Item3);
+            }
 
-                mesh.AddTripleIndices(a, b, c);
-                mesh.AddTripleNormals(n, n, n);
+            for (var i = 0; i < mesh.GetVertexCount(); i++)
+            {
+                var n = Utils.SafeNormalized(mesh.GetVertexAt(i));
+                mesh.AddNormal(n);
             }
 
             mesh.SetBeginMode(BeginMode.Triangles);
@@ -110,30 +110,14 @@ namespace SharedLib
 
             var point1 = mesh.GetVertexAt(p1);
             var point2 = mesh.GetVertexAt(p2);
-            var middle = new Vector3((point1.X + point2.X) / 2 , (point1.Y + point2.Y) / 2, (point1.Z + point2.Z) / 2);
+            var middle = Utils.AdjustVectorLength(new Vector3((point1.X + point2.X) / 2,
+                (point1.Y + point2.Y) / 2,
+                (point1.Z + point2.Z) / 2), _radius);
 
-            int index = mesh.AddVertex(Utils.AdjustVectorLength(middle, _radius));
+            var index = mesh.AddVertex(middle);
             _middlePointIndexCache.Add(key, index);
 
             return index;
-        }
-
-        private Vector3 GetFaceNormal(Mesh mesh, int p1, int p2, int p3)
-        {
-            var point1 = mesh.GetVertexAt(p1);
-            var point2 = mesh.GetVertexAt(p2);
-            var point3 = mesh.GetVertexAt(p3);
-
-            var e1 = point2 - point1;
-            var e2 = point3 - point1;
-            var c = Vector3.Cross(e1, e2);
-
-            if (c.Length > 0)
-            {
-                return c / c.Length;
-            }
-
-            return Vector3.Zero;
         }
 
         public float GetRadius()

@@ -101,6 +101,11 @@ namespace SharedLib
             UpdateBuffer(index, offset, _texVboId);
         }
 
+        public int GetVertexCount()
+        {
+            return _vertices.Count;
+        }
+
         private void UpdateBuffer(int index, Vector3 offset, int vboId)
         {
             unsafe
