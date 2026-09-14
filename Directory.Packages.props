@@ -1,0 +1,12 @@
+<Project>
+
+  <ItemGroup>
+    <PackageVersion Include="OpenTK" Version="4.9.4" />
+    <PackageVersion Include="StbImageSharp" Version="2.30.16" />
+    <PackageVersion Include="StbImageWriteSharp" Version="1.16.7" />
+    <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="17.14.1" />
+    <PackageVersion Include="xunit" Version="2.9.3" />
+    <PackageVersion Include="xunit.runner.visualstudio" Version="3.1.4" />
+  </ItemGroup>
+
+</Project>

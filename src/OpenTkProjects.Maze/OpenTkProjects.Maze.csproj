@@ -1,0 +1,12 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <RootNamespace>OpenTkProjects.Maze</RootNamespace>
+  </PropertyGroup>
+
+  <!--
+    Deliberately references nothing. Maze carving is game logic, not rendering, so it stays
+    independent of the graphics library and of OpenTK itself.
+  -->
+
+</Project>

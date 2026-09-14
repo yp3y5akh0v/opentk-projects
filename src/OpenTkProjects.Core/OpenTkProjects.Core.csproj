@@ -1,0 +1,13 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <ItemGroup>
+    <PackageReference Include="OpenTK" />
+    <PackageReference Include="StbImageSharp" />
+    <PackageReference Include="StbImageWriteSharp" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="Assets/Shaders/**/*.glsl" />
+  </ItemGroup>
+
+</Project>

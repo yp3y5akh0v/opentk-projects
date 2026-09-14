@@ -1,0 +1,24 @@
+<Solution>
+  <Folder Name="/Solution Items/">
+    <File Path="README.md" />
+    <File Path="global.json" />
+    <File Path="Directory.Build.props" />
+    <File Path="Directory.Packages.props" />
+    <File Path=".gitignore" />
+    <File Path=".gitattributes" />
+  </Folder>
+  <Folder Name="/src/">
+    <Project Path="src/Cloth3D/Cloth3D.csproj" />
+    <Project Path="src/Collision2DPerformance/Collision2DPerformance.csproj" />
+    <Project Path="src/MazeGen2D/MazeGen2D.csproj" />
+    <Project Path="src/MazeGen3D/MazeGen3D.csproj" />
+    <Project Path="src/OpenTkProjects.Core/OpenTkProjects.Core.csproj" />
+    <Project Path="src/OpenTkProjects.Maze/OpenTkProjects.Maze.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/Cloth3D.Tests/Cloth3D.Tests.csproj" />
+    <Project Path="tests/Collision2DPerformance.Tests/Collision2DPerformance.Tests.csproj" />
+    <Project Path="tests/OpenTkProjects.Core.Tests/OpenTkProjects.Core.Tests.csproj" />
+    <Project Path="tests/OpenTkProjects.Maze.Tests/OpenTkProjects.Maze.Tests.csproj" />
+  </Folder>
+</Solution>
